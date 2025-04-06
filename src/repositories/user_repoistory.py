@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from src.models.user import User
 from src.interfaces.authentication_utils import IAuthenticationUtils
 from src.schemas.user_schema import UserCreate
+from src.schemas.user_filters import UserFilters
 from src.infrastructure.database import get_db
 from fastapi import Depends
 from src.interfaces.user_repository_interface import IUserRepository
@@ -33,3 +34,20 @@ class UserRepository(IUserRepository):
     
     def get_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
+    
+    def get(self, user_filters: UserFilters, many = False):
+        query = self.db.query(User)
+
+        if user_filters.email:
+            query = query.filter(User.email == user_filters.email)
+
+        if user_filters.username:
+            query = query.filter(User.username == user_filters.username)
+    
+        if user_filters.name:
+            query = query.filter(User.name == user_filters.name)
+
+        if many:
+            return query.all()
+        
+        return query.first()

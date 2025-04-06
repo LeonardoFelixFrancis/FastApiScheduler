@@ -7,4 +7,7 @@ class IAuthenticationService:
     @abstractmethod
     def login_user(self, data: LoginSchema):
         pass
-            
+
+    @abstractmethod
+    def refresh_token(self, refresh_token: str):
+        pass

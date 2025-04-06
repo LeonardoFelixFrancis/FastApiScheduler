@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 from src.models.user import User
 from src.schemas.user_schema import UserCreate
+from src.schemas.user_filters import UserFilters
+from pydantic import BaseModel
+from fastapi.exceptions import HTTPException
+
 
 class IUserRepository(ABC):
     
@@ -18,4 +22,8 @@ class IUserRepository(ABC):
     
     @abstractmethod
     def get_by_username(self, username: str) -> User:
+        pass
+
+    @abstractmethod
+    def get(self, filters: UserFilters, many=False) -> User:
         pass
