@@ -15,5 +15,5 @@ def get_user(user_id: int, user = Depends(get_current_user), user_service: IUser
     return user_service.get_user(user_id)
 
 @router.post("/", response_model=UserResponse)
-def create_user(user: UserCreate, user_service: IUserService = Depends(get_user_service)):
-    return user_service.create_user(user)
+def create_user(user_data: UserCreate, user = Depends(get_current_user), user_service: IUserService = Depends(get_user_service)):
+    return user_service.create_user(user_data, user)

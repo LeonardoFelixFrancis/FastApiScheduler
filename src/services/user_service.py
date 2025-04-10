@@ -6,18 +6,15 @@ from src.schemas.user_schema import UserCreate
 from src.schemas.user_filters import UserFilters
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
-from fastapi import status
+from src.exceptions import ambiguous_permission, duplicate_email, unauthorized_action
+
+from src.models.user import User
 
 class UserService(IUserService):
 
     def __init__(self, user_repository: IUserRepository):
         self.user_repository = user_repository
 
-        self.duplicate_email = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="A User with this e-mail already exists",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
 
 
     def list_users(self):
@@ -26,13 +23,17 @@ class UserService(IUserService):
     def get_user(self, user_id: int):
         return self.user_repository.get_user_by_id(user_id)
     
-    def create_user(self, user: UserCreate):
+    def create_user(self, user: UserCreate, logged_user: User):
+
+        if not logged_user.is_adm:
+            raise unauthorized_action
+
         existing_user_email = self.user_repository.get(UserFilters(email=user.email))
         existing_user_username = self.user_repository.get(UserFilters(username=user.username))
 
         existing_user_response = {
-            'email_already_taken': False,
-            'username_already_taken': False
+            'email_already_taken': '',
+            'username_already_taken': ''
         }
 
         if existing_user_email:
@@ -43,6 +44,8 @@ class UserService(IUserService):
 
         if existing_user_username or existing_user_email:
             return JSONResponse(existing_user_response, status_code = 409)
-
+        
+        if user.is_teacher and user.is_adm:
+            return ambiguous_permission
 
         return self.user_repository.create_user(user)

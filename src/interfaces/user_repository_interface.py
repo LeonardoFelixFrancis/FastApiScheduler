@@ -25,5 +25,9 @@ class IUserRepository(ABC):
         pass
 
     @abstractmethod
-    def get(self, filters: UserFilters, many=False) -> User:
+    def get(self, filters: UserFilters) -> User:
+        pass
+
+    @abstractmethod
+    def list(self, filters: UserFilters) -> list[User]:
         pass

@@ -5,6 +5,8 @@ class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
+    is_teacher: bool
+    is_adm: bool
 
 class UserResponse(BaseModel):
     id: int

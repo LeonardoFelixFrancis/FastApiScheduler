@@ -1,0 +1,26 @@
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Boolean, ForeignKey, Date, Time
+from sqlalchemy.dialects.postgresql import ARRAY
+from src.infrastructure.database import Base
+import datetime
+
+class Lesson(Base):
+    __tablename__ = 'lessons'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    lesson_name: Mapped[str] = mapped_column(String, nullable=False)
+    lesson_subject: Mapped[str] = mapped_column(String, nullable=False)
+    students: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=False)
+    teacher_id: Mapped[int] = mapped_column(ForeignKey("user.id", nullable=False))
+    teacher = relationship("User", back_populates="lessons")
+    schedules = relationship("lessonSchedule", back_populates="lesson_info")
+
+class LessonSchedule(Base):
+    __tablename__ = 'lesson_schedule'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    lesson_id: Mapped[int] = mapped_column(ForeignKey("lesson.id"), nullable=True)
+    date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
+    time: Mapped[datetime.time] = mapped_column(Time, nullable=False)
+
+    lesson_info = relationship("Lesson", back_populates="schedules")

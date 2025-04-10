@@ -27,6 +27,9 @@ class UserRepository(IUserRepository):
             password=self.authentication_utils.hash_password(user.password)
         )
 
+        user.is_teacher = user.is_teacher
+        user.is_adm = user.is_adm
+
         self.db.add(db_user)
         self.db.commit()
         self.db.refresh(db_user)
@@ -35,8 +38,19 @@ class UserRepository(IUserRepository):
     def get_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
     
-    def get(self, user_filters: UserFilters, many = False):
+    def get(self, user_filters: UserFilters) -> User:
+        query = self._inner_list(user_filters)
+        return query.first()
+    
+    def list(self, user_filters: UserFilters) -> list[User]:
+        query = self._inner_list(user_filters)
+        return query.all()
+    
+    def _inner_list(self, user_filters: UserFilters):
         query = self.db.query(User)
+
+        if user_filters.id:
+            query = query.filter(User.id == user_filters.id)
 
         if user_filters.email:
             query = query.filter(User.email == user_filters.email)
@@ -47,7 +61,4 @@ class UserRepository(IUserRepository):
         if user_filters.name:
             query = query.filter(User.name == user_filters.name)
 
-        if many:
-            return query.all()
-        
-        return query.first()
+        return query
