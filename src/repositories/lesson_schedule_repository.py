@@ -16,11 +16,12 @@ class LessonScheduleRepository(ILessonScheduleRepository):
         query = self._inner_list(filter)
         return query.all()
     
-    def create(self, data: LessonScheduleSchema) -> LessonSchedule:
+    def create(self, data: LessonScheduleSchema, company_id) -> LessonSchedule:
         lesson_schedule = LessonSchedule(
             lesson_id = data.lesson_id,
             date = data.date,
-            time = data.time
+            time = data.time,
+            company_id = company_id
         )
 
         self.db.add(lesson_schedule)
@@ -52,5 +53,8 @@ class LessonScheduleRepository(ILessonScheduleRepository):
 
         if filter.date:
             query = query.filter(LessonSchedule.date == filter.date)
+
+        if filter.company_id:
+            query = query.filter(LessonSchedule.company_id == filter.company_id)
 
         return query

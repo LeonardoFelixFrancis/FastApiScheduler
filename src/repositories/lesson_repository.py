@@ -16,12 +16,13 @@ class LessonRepository(ILessonRepository):
         query = self._inner_list(filters)
         return query.all()
     
-    def create(self, data: LessonSchema) -> Lesson:
+    def create(self, data: LessonSchema, company_id: int) -> Lesson:
         lesson = Lesson(
             lesson_name = data.lesson_name,
             lesson_subject = data.lesson_subject,
             students = data.students,
-            teacher_id = data.teacher_id
+            teacher_id = data.teacher_id,
+            company_id = company_id
         )
 
         self.db.add(lesson)
@@ -54,5 +55,8 @@ class LessonRepository(ILessonRepository):
 
         if filters.id:
             query = query.filter(Lesson.id == filters.id)
+
+        if filters.company_id:
+            query = query.filter(Lesson.company_id == filters.company_id)
 
         return query

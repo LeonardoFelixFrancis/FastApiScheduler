@@ -6,3 +6,4 @@ class UserFilters(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     name: Optional[str] = None
+    company_id: Optional[int] = None

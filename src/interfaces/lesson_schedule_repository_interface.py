@@ -13,7 +13,7 @@ class ILessonScheduleRepository(ABC):
         pass
     
     @abstractmethod
-    def create(self, data: LessonScheduleSchema) -> LessonSchedule:
+    def create(self, data: LessonScheduleSchema, company_id: int) -> LessonSchedule:
         pass
     
     @abstractmethod

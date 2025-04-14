@@ -28,25 +28,16 @@ def get_lesson_repository(db: Session = Depends(get_db)) -> LessonRepository:
 
 def get_lesson_schedule_repository(db: Session = Depends(get_db)) -> LessonScheduleRepository:
     return LessonScheduleRepository(db) 
-
-# SERVICES
-def get_user_service(user_repository = Depends(get_user_repository)) -> UserService:
-    return UserService(user_repository)
-
-def get_authentication_service(user_repository = Depends(get_user_repository), authentication_utils: AuthenticationUtils = Depends(get_auth_utils)):
-    return AuthenticationService(user_repository, authentication_utils)
-
-def get_lesson_service(lesson_repository = Depends(get_lesson_repository), user_repository = Depends(get_user_repository)) -> LessonService:
-    return LessonService(lesson_repository, user_repository)
-
-def get_lesson_schedule_service(lesson_schedule_repository = Depends(get_lesson_schedule_repository), lesson_repository = Depends(get_lesson_repository)) -> LessonScheduleService:
-    return LessonScheduleService(lesson_schedule_repository, lesson_repository)
+    
  
 # OTHERS
 def get_current_user(user_repository = Depends(get_user_repository), auth_utils = Depends(get_auth_utils), token = Depends(oauth2_scheme)):
     username = auth_utils.get_current_user_username(token)
     user = user_repository.get_by_username(username)
 
+    return user
+
+def authenticate(user = Depends(get_current_user)):
     if not user:
         raise  HTTPException(
         selfstatus_code=status.HTTP_401_UNAUTHORIZED,
@@ -55,3 +46,18 @@ def get_current_user(user_repository = Depends(get_user_repository), auth_utils 
         )
     
     return user
+
+# SERVICES
+def get_user_service(user_repository = Depends(get_user_repository)) -> UserService:
+    return UserService(user_repository)
+
+def get_authentication_service(user_repository = Depends(get_user_repository), authentication_utils: AuthenticationUtils = Depends(get_auth_utils)):
+    return AuthenticationService(user_repository, authentication_utils)
+
+def get_lesson_service(lesson_repository = Depends(get_lesson_repository), user_repository = Depends(get_user_repository), logged_user = Depends(get_current_user)) -> LessonService:
+    return LessonService(lesson_repository, user_repository, logged_user)
+
+def get_lesson_schedule_service(lesson_schedule_repository = Depends(get_lesson_schedule_repository), lesson_repository = Depends(get_lesson_repository), logged_user = Depends(get_current_user)) -> LessonScheduleService:
+    return LessonScheduleService(lesson_schedule_repository, lesson_repository, logged_user)
+
+    

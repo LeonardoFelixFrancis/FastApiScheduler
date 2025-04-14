@@ -15,6 +15,7 @@ class LessonFilter(BaseModel):
     lesson_subject: Optional[str] = None
     students: Optional[list[str]] = None
     teacher_id: Optional[int] = None
+    company_id: Optional[int] = None
 
 class LessonScheduleSchema(BaseModel):
     id: int
@@ -27,3 +28,4 @@ class LessonScheduleFilter(BaseModel):
     lesson_id: Optional[int] = None 
     date: Optional[datetime.date] = None
     time: Optional[datetime.time] = None
+    company_id: Optional[int] = None

@@ -30,3 +30,8 @@ lesson_does_not_exist = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="The informed lesson does not exist."
 )
+
+lesson_schedule_does_not_exist = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail='The informed lesson schedule does not exist.'
+)

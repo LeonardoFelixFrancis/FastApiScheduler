@@ -12,6 +12,6 @@ class User(Base):
     password: Mapped[str] = mapped_column(String, nullable=False)
     is_teacher: Mapped[bool] = mapped_column(Boolean, default=False)
     is_adm: Mapped[bool] = mapped_column(Boolean, default=False)
-    group_id: Mapped[int] = mapped_column(Integer, default=False)
+    company_id: Mapped[int] = mapped_column(Integer, default=False)
 
     lessons = relationship("Lesson", back_populates="user")
