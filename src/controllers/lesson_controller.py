@@ -1,4 +1,4 @@
-from src.interfaces.lesson_service_interface import ILessonService
+from src.interfaces.lesson.lesson_service_interface import ILessonService
 from dependencies import get_lesson_service, authenticate
 from fastapi import Depends, APIRouter
 from src.schemas.lesson_schema import LessonFilter, LessonSchema

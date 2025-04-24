@@ -7,12 +7,14 @@ from sqlalchemy import pool
 from alembic import context
 from src.infrastructure.database import DATABASE_URL
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 from src.infrastructure.database import Base
 
 def import_models():
     models_dir = os.path.join(os.path.dirname(__file__), "../src/models")
+    print(models_dir)
     for file in os.listdir(models_dir):
+        print(file)
         if file.endswith(".py") and file != "__init__.py":
             module_name = f'models.{file[:-3]}'
             print(module_name)

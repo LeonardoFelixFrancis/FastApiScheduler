@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 from fastapi import Depends
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
-from src.interfaces.authentication_utils import IAuthenticationUtils
+from src.interfaces.authentication.authentication_utils import IAuthenticationUtils
 from fastapi.exceptions import HTTPException
 from fastapi import status
 import config

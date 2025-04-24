@@ -1,10 +1,12 @@
 from src.repositories.user_repoistory import UserRepository
 from src.repositories.lesson_repository import LessonRepository
 from src.repositories.lesson_schedule_repository import LessonScheduleRepository
+from src.repositories.company_repository import CompanyRepository
 from src.services.user_service import UserService
 from src.services.authentication import AuthenticationService
 from src.services.lesson_service import LessonService
 from src.services.lesson_schedule_service import LessonScheduleService
+from src.services.company_service import CompanyService
 from src.infrastructure.database import get_db
 from src.utils.authentication_utils import AuthenticationUtils
 from fastapi.security import OAuth2PasswordBearer
@@ -28,6 +30,9 @@ def get_lesson_repository(db: Session = Depends(get_db)) -> LessonRepository:
 
 def get_lesson_schedule_repository(db: Session = Depends(get_db)) -> LessonScheduleRepository:
     return LessonScheduleRepository(db) 
+
+def get_company_repository(db: Session = Depends(get_db)) -> CompanyRepository:
+    return CompanyRepository(db)
     
  
 # OTHERS
@@ -48,8 +53,8 @@ def authenticate(user = Depends(get_current_user)):
     return user
 
 # SERVICES
-def get_user_service(user_repository = Depends(get_user_repository)) -> UserService:
-    return UserService(user_repository)
+def get_user_service(user_repository = Depends(get_user_repository), company_repository = Depends(get_company_repository)) -> UserService:
+    return UserService(user_repository, company_repository)
 
 def get_authentication_service(user_repository = Depends(get_user_repository), authentication_utils: AuthenticationUtils = Depends(get_auth_utils)):
     return AuthenticationService(user_repository, authentication_utils)
@@ -60,4 +65,5 @@ def get_lesson_service(lesson_repository = Depends(get_lesson_repository), user_
 def get_lesson_schedule_service(lesson_schedule_repository = Depends(get_lesson_schedule_repository), lesson_repository = Depends(get_lesson_repository), logged_user = Depends(get_current_user)) -> LessonScheduleService:
     return LessonScheduleService(lesson_schedule_repository, lesson_repository, logged_user)
 
-    
+def get_company_service(company_repository = Depends(get_company_repository)):
+    return CompanyService(company_repository)

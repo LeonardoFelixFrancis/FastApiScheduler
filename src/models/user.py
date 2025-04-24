@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, Boolean
+from sqlalchemy import Integer, String, Boolean, ForeignKey
 from src.infrastructure.database import Base
 
 class User(Base):
@@ -12,6 +12,7 @@ class User(Base):
     password: Mapped[str] = mapped_column(String, nullable=False)
     is_teacher: Mapped[bool] = mapped_column(Boolean, default=False)
     is_adm: Mapped[bool] = mapped_column(Boolean, default=False)
-    company_id: Mapped[int] = mapped_column(Integer, default=False)
+    company_id: Mapped[int | None] = mapped_column(ForeignKey('companies.id'), nullable=True)
 
-    lessons = relationship("Lesson", back_populates="user")
+    lessons = relationship("Lesson", back_populates="teacher")
+    company = relationship("Company", back_populates="users")

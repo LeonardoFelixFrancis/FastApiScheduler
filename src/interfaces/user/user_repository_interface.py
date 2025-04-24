@@ -1,12 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from src.models.user import User
 from src.schemas.user_schema import UserCreate
 from src.schemas.user_filters import UserFilters
-from pydantic import BaseModel
-from fastapi.exceptions import HTTPException
+from src.interfaces.base_repositories_interfaces import IBaseRepository
+from typing import Optional
 
-
-class IUserRepository(ABC):
+class IUserRepository(IBaseRepository):
     
     @abstractmethod
     def get_all_users(self) -> list[User]:
@@ -17,7 +16,7 @@ class IUserRepository(ABC):
         pass
     
     @abstractmethod
-    def create_user(self, user: UserCreate) -> User:
+    def create_user(self, user: UserCreate, is_teacher: bool = True, is_adm: bool = False, company_id: Optional[int] = None) -> User:
         pass
     
     @abstractmethod

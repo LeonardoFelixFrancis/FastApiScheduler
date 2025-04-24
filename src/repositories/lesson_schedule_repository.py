@@ -1,12 +1,15 @@
-from src.interfaces.lesson_schedule_repository_interface import ILessonScheduleRepository
+from src.interfaces.lesson.lesson_schedule_repository_interface import ILessonScheduleRepository
 from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
 from src.models.lessons import LessonSchedule
 from sqlalchemy.orm import Session
+from src.repositories.base_repository import BaseRepository
 
-class LessonScheduleRepository(ILessonScheduleRepository):
+class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
 
     def __init__(self, db: Session):
-        self.db = db
+        
+        super().__init__(db)
+
 
     def get(self, filter: LessonScheduleFilter) -> LessonSchedule:
         query = self._inner_list(filter)
@@ -16,7 +19,7 @@ class LessonScheduleRepository(ILessonScheduleRepository):
         query = self._inner_list(filter)
         return query.all()
     
-    def create(self, data: LessonScheduleSchema, company_id) -> LessonSchedule:
+    def create(self, data: LessonScheduleSchema, company_id: int | None) -> LessonSchedule:
         lesson_schedule = LessonSchedule(
             lesson_id = data.lesson_id,
             date = data.date,
@@ -25,7 +28,6 @@ class LessonScheduleRepository(ILessonScheduleRepository):
         )
 
         self.db.add(lesson_schedule)
-        self.db.commit()
 
         return lesson_schedule
     

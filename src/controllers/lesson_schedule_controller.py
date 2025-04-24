@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from dependencies import get_lesson_schedule_service, authenticate
 from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
-from src.interfaces.lesson_schedule_service_interface import ILessonScheduleService, LessonScheduleSchema
+from src.interfaces.lesson.lesson_schedule_service_interface import ILessonScheduleService, LessonScheduleSchema
 import datetime
 from typing import Optional
 

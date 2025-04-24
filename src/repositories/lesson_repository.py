@@ -1,12 +1,13 @@
-from src.interfaces.lesson_repository_interface import ILessonRepository
+from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
 from src.schemas.lesson_schema import LessonFilter, LessonSchema
 from src.models.lessons import Lesson
 from sqlalchemy.orm import Session
+from src.repositories.base_repository import BaseRepository
 
-class LessonRepository(ILessonRepository):
+class LessonRepository(BaseRepository, ILessonRepository):
 
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db)
 
     def get(self, filters: LessonFilter):
         query = self._inner_list(filters)
@@ -16,7 +17,7 @@ class LessonRepository(ILessonRepository):
         query = self._inner_list(filters)
         return query.all()
     
-    def create(self, data: LessonSchema, company_id: int) -> Lesson:
+    def create(self, data: LessonSchema, company_id: int | None) -> Lesson:
         lesson = Lesson(
             lesson_name = data.lesson_name,
             lesson_subject = data.lesson_subject,
@@ -26,8 +27,6 @@ class LessonRepository(ILessonRepository):
         )
 
         self.db.add(lesson)
-        self.db.commit()
-
         return lesson
     
     def update(self, data: LessonSchema) -> Lesson:
@@ -36,8 +35,6 @@ class LessonRepository(ILessonRepository):
         existing_lesson.lesson_subject = data.lesson_subject
         existing_lesson.students = data.students
         existing_lesson.teacher_id = data.teacher_id
-
-        self.db.commit()
         return existing_lesson
 
     def delete(self, lesson_id):

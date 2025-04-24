@@ -3,19 +3,19 @@ from typing import Optional
 import datetime
 
 class LessonSchema(BaseModel):
-    id: int
+    id: int | None
     lesson_name: str
     lesson_subject: str
     students: list[str]
     teacher_id: int
 
 class LessonFilter(BaseModel):
-    id: Optional[int] = None
-    lesson_name: Optional[str] = None
-    lesson_subject: Optional[str] = None
-    students: Optional[list[str]] = None
-    teacher_id: Optional[int] = None
-    company_id: Optional[int] = None
+    id: int | None = None
+    lesson_name: str | None = None
+    lesson_subject: str | None = None
+    students: list[str] | None = None
+    teacher_id: int | None = None
+    company_id: int | None = None
 
 class LessonScheduleSchema(BaseModel):
     id: int
@@ -24,8 +24,8 @@ class LessonScheduleSchema(BaseModel):
     time: datetime.time 
 
 class LessonScheduleFilter(BaseModel):
-    id: Optional[int] = None
-    lesson_id: Optional[int] = None 
+    id: int | None = None
+    lesson_id: int | None = None 
     date: Optional[datetime.date] = None
     time: Optional[datetime.time] = None
-    company_id: Optional[int] = None
+    company_id: int | None = None

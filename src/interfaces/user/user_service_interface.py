@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from src.interfaces.user_repository_interface import IUserRepository
+from src.interfaces.user.user_repository_interface import IUserRepository
 from src.schemas.user_schema import UserResponse
-from src.schemas.user_schema import UserCreate
+from src.schemas.user_schema import UserCreate, AdmCreate
 from src.models.user import User
 
 class IUserService:
@@ -18,5 +18,10 @@ class IUserService:
         pass
     
     @abstractmethod
-    def create_user(self, user: UserCreate, logged_user: User) -> UserResponse:
+    def create_adm(self, user: AdmCreate) -> UserResponse:
         pass
+
+    @abstractmethod
+    def create_teacher(self, user: UserCreate, logged_user: User) -> UserResponse:
+        pass
+    

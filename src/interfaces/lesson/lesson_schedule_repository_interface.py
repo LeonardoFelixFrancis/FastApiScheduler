@@ -1,8 +1,9 @@
 from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
 from src.models.lessons import LessonSchedule
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from src.interfaces.base_repositories_interfaces import IBaseRepository
 
-class ILessonScheduleRepository(ABC):
+class ILessonScheduleRepository(IBaseRepository):
 
     @abstractmethod
     def get(self, filters: LessonScheduleFilter) -> LessonSchedule:
@@ -13,7 +14,7 @@ class ILessonScheduleRepository(ABC):
         pass
     
     @abstractmethod
-    def create(self, data: LessonScheduleSchema, company_id: int) -> LessonSchedule:
+    def create(self, data: LessonScheduleSchema, company_id: int | None) -> LessonSchedule:
         pass
     
     @abstractmethod

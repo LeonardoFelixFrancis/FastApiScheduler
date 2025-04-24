@@ -21,6 +21,11 @@ teacher_does_not_exist = HTTPException(
     detail="The informed user does not exists."
 )
 
+teacher_cannot_be_adm = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="A Teacher account cannot be a admin user."
+)
+
 informed_user_is_not_teacher = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail="The informed user is not a teacher."

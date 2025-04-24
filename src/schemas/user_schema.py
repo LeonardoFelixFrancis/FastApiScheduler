@@ -1,12 +1,17 @@
 from pydantic import BaseModel, EmailStr
 
+class AdmCreate(BaseModel):
+    username: str
+    name: str
+    email: EmailStr
+    password: str
+    company_name: str
+
 class UserCreate(BaseModel):
     username: str
     name: str
     email: EmailStr
     password: str
-    is_teacher: bool
-    is_adm: bool
 
 class UserResponse(BaseModel):
     id: int

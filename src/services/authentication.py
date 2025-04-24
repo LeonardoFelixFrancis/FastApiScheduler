@@ -1,7 +1,7 @@
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
-from src.interfaces.user_repository_interface import IUserRepository
-from src.interfaces.authentication_utils import IAuthenticationUtils
+from src.interfaces.user.user_repository_interface import IUserRepository
+from src.interfaces.authentication.authentication_utils import IAuthenticationUtils
 from sqlalchemy.orm import Session
 from src.schemas.login_schema import LoginSchema
 from fastapi.exceptions import HTTPException

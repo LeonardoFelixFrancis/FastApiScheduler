@@ -1,6 +1,6 @@
-from src.interfaces.lesson_service_interface import ILessonService
-from src.interfaces.lesson_repository_interface import ILessonRepository
-from src.interfaces.user_repository_interface import IUserRepository
+from src.interfaces.lesson.lesson_service_interface import ILessonService
+from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
+from src.interfaces.user.user_repository_interface import IUserRepository
 from src.schemas.user_filters import UserFilters
 from src.schemas.lesson_schema import LessonFilter, LessonSchema
 from src.models.lessons import Lesson
@@ -31,8 +31,11 @@ class LessonService(ILessonService):
         
         if not existing_user.is_teacher:
             raise informed_user_is_not_teacher
+        
+        lesson = self.lesson_repository.create(data, self.logged_user.company_id)
+        self.lesson_repository.commit()
 
-        return self.lesson_repository.create(data, self.logged_user.company_id)
+        return lesson
     
     def update(self, data: LessonSchema) -> Lesson:
         existing_user = self.user_repository.get(UserFilters(id = data.teacher_id))
@@ -50,8 +53,11 @@ class LessonService(ILessonService):
         
         if existing_lesson.company_id != self.logged_user.company_id:
             raise unauthorized_action
+        
+        update_lesson = self.lesson_repository.update(data)
+        self.lesson_repository.commit()
 
-        return self.lesson_repository.update(data)
+        return update_lesson
         
     def delete(self, lesson_id: int) -> bool:
         existing_lesson = self.lesson_repository.get(LessonFilter(id = lesson_id, company_id=self.logged_user.company_id))
@@ -63,4 +69,6 @@ class LessonService(ILessonService):
             raise unauthorized_action
 
         self.lesson_repository.delete(lesson_id)
+        self.lesson_repository.commit()
+
         return True    
