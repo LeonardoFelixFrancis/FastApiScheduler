@@ -1,4 +1,4 @@
-from src.schemas.lesson_schema import LessonScheduleSchema, LessonScheduleFilter, LessonScheduleUpdateSchema
+from src.schemas.lesson_schema import LessonScheduleSchema, LessonScheduleFilter
 from src.models.lessons import LessonSchedule
 from abc import ABC, abstractmethod
 
@@ -21,7 +21,7 @@ class ILessonScheduleService(ABC):
         pass
 
     @abstractmethod
-    def update(self, data: LessonScheduleUpdateSchema) -> LessonSchedule:
+    def update(self, data: LessonScheduleSchema) -> LessonSchedule:
         pass
 
     

@@ -13,6 +13,3 @@ class CompanyService(ICompanyService):
     
     def create(self, data: CompanySchema) -> Company:
         return self.company_repository.create(data)
-    
-    def manageCompany(self, config: dict):
-        return ['groselha']

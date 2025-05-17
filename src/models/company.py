@@ -9,5 +9,3 @@ class Company(Base):
     name: Mapped[String] = mapped_column(String, nullable=False)
 
     users = relationship('User', back_populates='company')
-    schedules = relationship('LessonSchedule', back_populates='company')
-    lessons = relationship("Lesson", back_populates='company')

@@ -10,7 +10,7 @@ class CompanyRepository(BaseRepository, ICompanyRepository):
         super().__init__(db)
 
     def create(self, data: CompanySchema):
-        company = Company(name = data.name)
+        company = Company(*data)
         self.db.add(company)
         return company
     

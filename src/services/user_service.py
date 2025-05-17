@@ -15,21 +15,15 @@ from src.models.user import User
 
 class UserService(IUserService):
 
-    def __init__(self, user_repository: IUserRepository, company_repository: ICompanyRepository, logged_user: User):
+    def __init__(self, user_repository: IUserRepository, company_repository: ICompanyRepository):
         self.user_repository = user_repository
         self.company_repository = company_repository
-        self.logged_user = logged_user
 
     def list_users(self):
-        return self.user_repository.get_all_users(self.logged_user.company_id)
+        return self.user_repository.get_all_users()
     
     def get_user(self, user_id: int):
-        user = self.user_repository.get_user_by_id(user_id)
-
-        if user.company_id != self.logged_user.company_id:
-            raise unauthorized_action
-        
-        return user
+        return self.user_repository.get_user_by_id(user_id)
     
     def create_adm(self, user: AdmCreate):
         company = self.company_repository.create(CompanySchema(id = None, name = user.company_name))
@@ -40,7 +34,7 @@ class UserService(IUserService):
         return self._create_user(UserCreate(username = user.username,
                                             name = user.name,
                                             email = user.email,
-                                            password = user.password), False, True, company.id)
+                                            password = user.email), False, True, company.id)
     
     def create_teacher(self, user: UserCreate, logged_user: User):
         if not logged_user.is_adm:

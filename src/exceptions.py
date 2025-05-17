@@ -40,8 +40,3 @@ lesson_schedule_does_not_exist = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail='The informed lesson schedule does not exist.'
 )
-
-lesson_schedule_conflict = HTTPException(
-    status_code=status.HTTP_400_BAD_REQUEST,
-    detail="Cannot schedule this lesson, already exists a lesson for this teacher that would conflict with it."
-)

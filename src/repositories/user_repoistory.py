@@ -16,8 +16,8 @@ class UserRepository(BaseRepository, IUserRepository):
 
         super().__init__(db)
 
-    def get_all_users(self, company_id: int) -> list[User]:
-        return self.db.query(User).filter(User.company_id == company_id).all()
+    def get_all_users(self):
+        return self.db.query(User).all()
     
     def get_user_by_id(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()

@@ -32,9 +32,6 @@ class LessonService(ILessonService):
         if not existing_user.is_teacher:
             raise informed_user_is_not_teacher
         
-        if existing_user.company_id != self.logged_user.company_id:
-            raise unauthorized_action
-        
         lesson = self.lesson_repository.create(data, self.logged_user.company_id)
         self.lesson_repository.commit()
 

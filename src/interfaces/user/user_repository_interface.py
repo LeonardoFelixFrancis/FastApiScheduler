@@ -8,7 +8,7 @@ from typing import Optional
 class IUserRepository(IBaseRepository):
     
     @abstractmethod
-    def get_all_users(self, company_id: int) -> list[User]:
+    def get_all_users(self) -> list[User]:
         pass
 
     @abstractmethod
