@@ -59,4 +59,7 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
         if filter.company_id:
             query = query.filter(LessonSchedule.company_id == filter.company_id)
 
+        if filter.teacher_id:
+            query = query.filter(LessonSchedule.teacher_id == filter.teacher_id)
+
         return query

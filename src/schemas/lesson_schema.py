@@ -7,14 +7,12 @@ class LessonSchema(BaseModel):
     lesson_name: str
     lesson_subject: str
     students: list[str]
-    teacher_id: int
 
 class LessonFilter(BaseModel):
     id: int | None = None
     lesson_name: str | None = None
     lesson_subject: str | None = None
     students: list[str] | None = None
-    teacher_id: int | None = None
     company_id: int | None = None
 
 class LessonScheduleSchema(BaseModel):
@@ -22,6 +20,7 @@ class LessonScheduleSchema(BaseModel):
     lesson_id: int
     date: datetime.date
     time: datetime.time 
+    teacher_id: int
 
 class LessonScheduleFilter(BaseModel):
     id: int | None = None
@@ -29,3 +28,4 @@ class LessonScheduleFilter(BaseModel):
     date: Optional[datetime.date] = None
     time: Optional[datetime.time] = None
     company_id: int | None = None
+    teacher_id: int | None = None

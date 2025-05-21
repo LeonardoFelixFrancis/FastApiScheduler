@@ -22,30 +22,12 @@ class LessonService(ILessonService):
         filters.company_id = self.logged_user.company_id
         return self.lesson_repository.list(filters)
     
-    def create(self, data: LessonSchema) -> Lesson:
-
-        existing_user = self.user_repository.get(UserFilters(id = data.teacher_id))
-
-        if existing_user is None:
-            raise teacher_does_not_exist
-        
-        if not existing_user.is_teacher:
-            raise informed_user_is_not_teacher
-        
+    def create(self, data: LessonSchema) -> Lesson:        
         lesson = self.lesson_repository.create(data, self.logged_user.company_id)
         self.lesson_repository.commit()
-
         return lesson
     
     def update(self, data: LessonSchema) -> Lesson:
-        existing_user = self.user_repository.get(UserFilters(id = data.teacher_id))
-
-        if existing_user is None:
-            raise teacher_does_not_exist
-        
-        if not existing_user.is_teacher:
-            raise informed_user_is_not_teacher
-        
         existing_lesson = self.lesson_repository.get(LessonFilter(id = data.id, company_id=self.logged_user.company_id))
 
         if existing_lesson is None:

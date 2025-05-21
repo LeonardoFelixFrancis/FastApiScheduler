@@ -13,10 +13,9 @@ def list_lessons(lesson_service: ILessonService = Depends(get_lesson_service),
                 id: Optional[int] = None,
                 lesson_name: Optional[str] = None,
                 lesson_subject: Optional[str] = None,
-                teacher_id: Optional[int] = None
                 ):
     
-    return lesson_service.list(LessonFilter(id=id, lesson_name=lesson_name, lesson_subject=lesson_subject, teacher_id=teacher_id))
+    return lesson_service.list(LessonFilter(id=id, lesson_name=lesson_name, lesson_subject=lesson_subject))
 
 @router.get('/{lesson_id}')
 def get_lesson(lesson_id: int, lesson_service: ILessonService = Depends(get_lesson_service),

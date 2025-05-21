@@ -22,7 +22,6 @@ class LessonRepository(BaseRepository, ILessonRepository):
             lesson_name = data.lesson_name,
             lesson_subject = data.lesson_subject,
             students = data.students,
-            teacher_id = data.teacher_id,
             company_id = company_id
         )
 
@@ -34,7 +33,6 @@ class LessonRepository(BaseRepository, ILessonRepository):
         existing_lesson.lesson_name = data.lesson_name
         existing_lesson.lesson_subject = data.lesson_subject
         existing_lesson.students = data.students
-        existing_lesson.teacher_id = data.teacher_id
         return existing_lesson
 
     def delete(self, lesson_id):
