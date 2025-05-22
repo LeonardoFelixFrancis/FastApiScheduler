@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from src.schemas.user_filters import UserFilters
 from src.interfaces.user.user_repository_interface import IUserRepository
 from src.schemas.user_schema import UserResponse
 from src.schemas.user_schema import UserCreate, AdmCreate
@@ -10,7 +11,7 @@ class IUserService:
         pass
     
     @abstractmethod
-    def list_users(self) -> list[UserResponse]:
+    def list_users(self, filters: UserFilters) -> list[UserResponse]:
         pass
     
     @abstractmethod

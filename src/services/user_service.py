@@ -4,6 +4,7 @@ from src.interfaces.company.company_repository_interface import ICompanyReposito
 from src.interfaces.user.user_service_interface import IUserService
 from fastapi import Depends
 from src.schemas.user_schema import UserCreate, AdmCreate
+from src.schemas.user_filters import UserFilters
 from src.schemas.company_schema import CompanySchema
 from src.schemas.user_filters import UserFilters
 from fastapi.exceptions import HTTPException
@@ -19,8 +20,8 @@ class UserService(IUserService):
         self.user_repository = user_repository
         self.company_repository = company_repository
 
-    def list_users(self):
-        return self.user_repository.get_all_users()
+    def list_users(self, filters: UserFilters):
+        return self.user_repository.list(filters)
     
     def get_user(self, user_id: int):
         return self.user_repository.get_user_by_id(user_id)
