@@ -26,18 +26,23 @@ class AuthenticationService:
         )
 
     def login_user(self, data: LoginSchema):
-        user = self.user_repository.get_by_username(data.username)
+        user = self.user_repository.get_by_email(data.email)
+        print(f'user {user}')
 
         if user is None:
             raise self.incorrect_credentials_exception
-
-        if not self.authentication_utils.verify_password(data.password, user.password):
+        password_check = self.authentication_utils.verify_password(data.password, user.password)
+        print(f'password check {password_check}')
+        if not password_check: 
             raise self.incorrect_credentials_exception
         
-        access_token = self.authentication_utils.create_access_token(data={"username": data.username})
-        refresh_token = self.authentication_utils.create_refresh_token(data={"username": data.username})
+        access_token = self.authentication_utils.create_access_token(data={"username": user.username})
+        refresh_token = self.authentication_utils.create_refresh_token(data={"username": user.username})
 
-        return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+        return {"access_token": access_token, 
+                "refresh_token": refresh_token, 
+                "token_type": "bearer", 
+                "user_data": {"id": user.id, "name": user.name, "username": user.username, "email": user.email}}
     
     def refresh_token(self, refresh_token: str):
         username = self.authentication_utils.get_current_user_username(refresh_token)

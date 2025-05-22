@@ -12,7 +12,6 @@ class Lesson(Base):
     lesson_subject: Mapped[str] = mapped_column(String, nullable=False)
     students: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=False)
     company_id: Mapped[int | None] = mapped_column(Integer, index=True)
-    teacher = relationship("User", back_populates="lessons")
     schedules = relationship("LessonSchedule", back_populates="lesson_info")
 
 class LessonSchedule(Base):

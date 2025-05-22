@@ -23,6 +23,7 @@ class UserRepository(BaseRepository, IUserRepository):
         return self.db.query(User).filter(User.id == user_id).first()
     
     def create_user(self, user: UserCreate, is_teacher: bool = True, is_adm: bool = False, company_id: Optional[int] = None):
+        print(f'user password to register {user.password}')
         db_user = User(
             name=user.name, 
             email=user.email, 
@@ -39,6 +40,9 @@ class UserRepository(BaseRepository, IUserRepository):
     
     def get_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
+    
+    def get_by_email(self, email: str):
+        return self.db.query(User).filter(User.email == email).first()
     
     def get(self, user_filters: UserFilters) -> User:
         query = self._inner_list(user_filters)

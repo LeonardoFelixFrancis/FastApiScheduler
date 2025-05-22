@@ -35,7 +35,7 @@ class UserService(IUserService):
         return self._create_user(UserCreate(username = user.username,
                                             name = user.name,
                                             email = user.email,
-                                            password = user.email), False, True, company.id)
+                                            password = user.password), False, True, company.id)
     
     def create_teacher(self, user: UserCreate, logged_user: User):
         if not logged_user.is_adm:

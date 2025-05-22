@@ -24,6 +24,10 @@ class IUserRepository(IBaseRepository):
         pass
 
     @abstractmethod
+    def get_by_email(self, email: str) -> User:
+        pass
+
+    @abstractmethod
     def get(self, filters: UserFilters) -> User:
         pass
 

@@ -24,6 +24,8 @@ class AuthenticationUtils(IAuthenticationUtils):
         return self.pwd_context.hash(password)
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
+        print(f'plain: {plain_password}')
+        print(f'hashed: {hashed_password}')
         return self.pwd_context.verify(plain_password, hashed_password)
 
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None):
