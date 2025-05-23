@@ -13,9 +13,8 @@ def get_users(user = Depends(authenticate),
               id: Optional[int] = None,
               username: Optional[str] = None,
               email: Optional[str] = None,
-              name: Optional[str] = None,
-              company_id: Optional[int] = None):
-    return user_service.list_users(UserFilters(id = id, username = username, email = email, name = name, company_id = company_id))
+              name: Optional[str] = None,):
+    return user_service.list_users(UserFilters(id = id, username = username, email = email, name = name))
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(user_id: int, user = Depends(authenticate), user_service: IUserService = Depends(get_user_service)):

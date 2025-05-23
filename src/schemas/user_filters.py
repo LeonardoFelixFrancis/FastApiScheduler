@@ -7,3 +7,4 @@ class UserFilters(BaseModel):
     email: str | None = None
     name: Optional[str] = None
     company_id: int | None = None
+    is_teacher: bool | None = None

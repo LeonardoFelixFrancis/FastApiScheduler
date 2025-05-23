@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 class AdmCreate(BaseModel):
     username: str
@@ -11,7 +12,7 @@ class UserCreate(BaseModel):
     username: str
     name: str
     email: EmailStr
-    password: str
+    password: str | None = None
 
 class UserResponse(BaseModel):
     id: int

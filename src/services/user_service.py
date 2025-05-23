@@ -11,16 +11,18 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from src.exceptions import ambiguous_permission, duplicate_email, unauthorized_action
 from typing import Optional
-
 from src.models.user import User
 
 class UserService(IUserService):
 
-    def __init__(self, user_repository: IUserRepository, company_repository: ICompanyRepository):
+    def __init__(self, user_repository: IUserRepository, company_repository: ICompanyRepository, logged_user: User):
         self.user_repository = user_repository
         self.company_repository = company_repository
+        self.logged_user = logged_user
 
     def list_users(self, filters: UserFilters):
+        filters.company_id = self.logged_user.company_id
+        filters.is_teacher = True
         return self.user_repository.list(filters)
     
     def get_user(self, user_id: int):

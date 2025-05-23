@@ -53,8 +53,8 @@ def authenticate(user = Depends(get_current_user)):
     return user
 
 # SERVICES
-def get_user_service(user_repository = Depends(get_user_repository), company_repository = Depends(get_company_repository)) -> UserService:
-    return UserService(user_repository, company_repository)
+def get_user_service(user_repository = Depends(get_user_repository), company_repository = Depends(get_company_repository), logged_user = Depends(get_current_user)) -> UserService:
+    return UserService(user_repository, company_repository, logged_user)
 
 def get_authentication_service(user_repository = Depends(get_user_repository), authentication_utils: AuthenticationUtils = Depends(get_auth_utils)):
     return AuthenticationService(user_repository, authentication_utils)

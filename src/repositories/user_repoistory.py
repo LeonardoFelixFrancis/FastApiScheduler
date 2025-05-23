@@ -8,6 +8,7 @@ from fastapi import Depends
 from src.interfaces.user.user_repository_interface import IUserRepository
 from src.repositories.base_repository import BaseRepository
 from typing import Optional
+import uuid
 
 class UserRepository(BaseRepository, IUserRepository):
 
@@ -23,7 +24,10 @@ class UserRepository(BaseRepository, IUserRepository):
         return self.db.query(User).filter(User.id == user_id).first()
     
     def create_user(self, user: UserCreate, is_teacher: bool = True, is_adm: bool = False, company_id: Optional[int] = None):
-        print(f'user password to register {user.password}')
+        
+        if not user.password:
+            user.password = str(uuid.uuid4())
+
         db_user = User(
             name=user.name, 
             email=user.email, 
@@ -66,5 +70,8 @@ class UserRepository(BaseRepository, IUserRepository):
     
         if user_filters.name:
             query = query.filter(User.name == user_filters.name)
+
+        if user_filters.is_teacher:
+            query = query.filter(User.is_teacher == user_filters.is_teacher)
 
         return query
