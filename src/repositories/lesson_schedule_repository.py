@@ -24,7 +24,8 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
             lesson_id = data.lesson_id,
             date = data.date,
             time = data.time,
-            company_id = company_id
+            company_id = company_id,
+            teacher_id = data.teacher_id
         )
 
         self.db.add(lesson_schedule)

@@ -63,13 +63,13 @@ class UserRepository(BaseRepository, IUserRepository):
             query = query.filter(User.id == user_filters.id)
 
         if user_filters.email:
-            query = query.filter(User.email == user_filters.email)
+            query = query.filter(User.email.ilike(f'%{user_filters.email}%'))
 
         if user_filters.username:
-            query = query.filter(User.username == user_filters.username)
+            query = query.filter(User.username.ilike(f'%{user_filters.username}%'))
     
         if user_filters.name:
-            query = query.filter(User.name == user_filters.name)
+            query = query.filter(User.name.ilike(f'%{user_filters.name}%'))
 
         if user_filters.is_teacher:
             query = query.filter(User.is_teacher == user_filters.is_teacher)

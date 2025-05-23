@@ -10,7 +10,7 @@ class Lesson(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
     lesson_name: Mapped[str] = mapped_column(String, nullable=False)
     lesson_subject: Mapped[str] = mapped_column(String, nullable=False)
-    students: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=False)
+    students: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=True)
     company_id: Mapped[int | None] = mapped_column(Integer, index=True)
     schedules = relationship("LessonSchedule", back_populates="lesson_info")
 
