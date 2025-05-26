@@ -15,7 +15,7 @@ class AuthenticationService:
 
         self.incorrect_credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="E-mail ou senha incorretos.",
             headers={"WWW-Authenticate": "Bearer"}
         )
 

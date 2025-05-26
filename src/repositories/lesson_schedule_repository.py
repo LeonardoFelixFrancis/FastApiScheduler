@@ -1,9 +1,10 @@
 from src.interfaces.lesson.lesson_schedule_repository_interface import ILessonScheduleRepository
-from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
+from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema, LessonScheduleSchemaResponse
 from src.models.lessons import LessonSchedule
 from sqlalchemy.orm import Session
 from src.repositories.base_repository import BaseRepository
-
+from src.models.user import User
+from src.models.lessons import Lesson
 class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
 
     def __init__(self, db: Session):
@@ -17,7 +18,8 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
     
     def list(self, filter: LessonScheduleFilter) -> list[LessonSchedule]:
         query = self._inner_list(filter)
-        return query.all()
+        items = query.all()
+        return [LessonScheduleSchemaResponse(**row._asdict()) for row in items]
     
     def create(self, data: LessonScheduleSchema, company_id: int | None) -> LessonSchedule:
         lesson_schedule = LessonSchedule(
@@ -46,7 +48,17 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
         return existing_lesson_schedule
 
     def _inner_list(self, filter: LessonScheduleFilter):
-        query = self.db.query(LessonSchedule)
+        query = self.db.query(LessonSchedule.id,
+                              LessonSchedule.lesson_id,
+                              LessonSchedule.teacher_id,
+                              LessonSchedule.lesson_info,
+                              LessonSchedule.date,
+                              LessonSchedule.time,
+                              LessonSchedule.company_id,
+                              User.name.label('teacher_name'),
+                              Lesson.lesson_name)\
+                              .join(User, User.id == LessonSchedule.teacher_id)\
+                              .join(Lesson, Lesson.id == LessonSchedule.lesson_id)
 
         if filter.id:
             query = query.filter(LessonSchedule.id == filter.id)
@@ -62,5 +74,11 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
 
         if filter.teacher_id:
             query = query.filter(LessonSchedule.teacher_id == filter.teacher_id)
+
+        if filter.date_start:
+            query = query.filter(LessonSchedule.date >= filter.date_start)
+
+        if filter.date_end:
+            query = query.filter(LessonSchedule.date <= filter.date_end)
 
         return query
