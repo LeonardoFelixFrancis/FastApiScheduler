@@ -27,3 +27,6 @@ class IUserService:
     def create_teacher(self, user: UserCreate, logged_user: User) -> UserResponse:
         pass
     
+    @abstractmethod
+    def delete_teacher(self, teacher_id: int) -> bool:
+        pass

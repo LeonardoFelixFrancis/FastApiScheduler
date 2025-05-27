@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import Optional
 import datetime
 
@@ -33,6 +33,11 @@ class LessonScheduleSchemaResponse(BaseModel):
     teacher_name: str
     lesson_name: str
     company_id: int
+
+    class Config:
+        json_encoders = {
+            datetime.time: lambda t: t.strftime('%H:%M')
+        }
 
 class LessonScheduleFilter(BaseModel):
     id: int | None = None

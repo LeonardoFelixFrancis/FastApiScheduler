@@ -9,7 +9,7 @@ from src.schemas.company_schema import CompanySchema
 from src.schemas.user_filters import UserFilters
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
-from src.exceptions import ambiguous_permission, duplicate_email, unauthorized_action
+from src.exceptions import ambiguous_permission, duplicate_email, unauthorized_action, teacher_does_not_exist, informed_user_is_not_teacher
 from typing import Optional
 from src.models.user import User
 
@@ -67,3 +67,23 @@ class UserService(IUserService):
         self.user_repository.commit()
         
         return created_user
+
+    def delete_teacher(self, teacher_id) -> bool:
+
+        existing_teacher = self.user_repository.get(UserFilters(id=teacher_id))
+
+        if not self.logged_user.is_adm:
+            raise unauthorized_action
+
+        if not existing_teacher:
+            raise teacher_does_not_exist
+        
+        if existing_teacher.is_adm:
+            raise informed_user_is_not_teacher
+        
+        if existing_teacher.company_id != self.logged_user.company_id:
+            raise unauthorized_action
+        
+        self.user_repository.delete(teacher_id)
+        self.user_repository.commit()
+        return True

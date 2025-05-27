@@ -14,4 +14,6 @@ class User(Base):
     is_adm: Mapped[bool] = mapped_column(Boolean, default=False)
     company_id: Mapped[int | None] = mapped_column(ForeignKey('companies.id'), nullable=True)
 
+    active: Mapped[bool | None] = mapped_column(Boolean, default=True)
+
     company = relationship("Company", back_populates="users")

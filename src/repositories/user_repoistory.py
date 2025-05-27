@@ -54,6 +54,7 @@ class UserRepository(BaseRepository, IUserRepository):
     
     def list(self, user_filters: UserFilters) -> list[User]:
         query = self._inner_list(user_filters)
+        query = query.filter_by(active = True)
         return query.all()
     
     def _inner_list(self, user_filters: UserFilters):
@@ -75,3 +76,9 @@ class UserRepository(BaseRepository, IUserRepository):
             query = query.filter(User.is_teacher == user_filters.is_teacher)
 
         return query
+    
+    def delete(self, user_id: int) -> User:
+        user = self.db.query(User).filter_by(id = user_id).first()
+        user.active = False
+        return user
+        

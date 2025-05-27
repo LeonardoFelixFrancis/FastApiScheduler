@@ -14,7 +14,10 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
 
     def get(self, filter: LessonScheduleFilter) -> LessonSchedule:
         query = self._inner_list(filter)
-        return query.first()
+        item = query.first()
+        if item:
+            return LessonScheduleSchemaResponse(**item._asdict())
+        return None
     
     def list(self, filter: LessonScheduleFilter) -> list[LessonSchedule]:
         query = self._inner_list(filter)
@@ -39,12 +42,12 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
         return True
     
     def update(self, data: LessonScheduleSchema) -> LessonSchedule:
-        existing_lesson_schedule = self.get(LessonScheduleFilter(id = data.id))
+        existing_lesson_schedule = self.db.query(LessonSchedule).filter_by(id = data.id).first()
         existing_lesson_schedule.date = data.date
         existing_lesson_schedule.time = data.time
         existing_lesson_schedule.lesson_id = data.lesson_id
+        existing_lesson_schedule.teacher_id = data.teacher_id
 
-        self.db.commit()
         return existing_lesson_schedule
 
     def _inner_list(self, filter: LessonScheduleFilter):
@@ -74,7 +77,7 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
 
         if filter.teacher_id:
             query = query.filter(LessonSchedule.teacher_id == filter.teacher_id)
-
+        
         if filter.date_start:
             query = query.filter(LessonSchedule.date >= filter.date_start)
 

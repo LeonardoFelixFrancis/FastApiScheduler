@@ -55,7 +55,7 @@ class LessonScheduleService(ILessonScheduleService):
         if not existing_lesson_schedule:
             raise lesson_schedule_does_not_exist
         
-        if existing_lesson_schedule.company_id == self.logged_user.company_id:
+        if existing_lesson_schedule.company_id != self.logged_user.company_id:
             raise unauthorized_action
 
         lesson_schedule_updated = self.lesson_schedule_repository.update(data)

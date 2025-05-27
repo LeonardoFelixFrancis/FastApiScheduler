@@ -19,9 +19,9 @@ def list_lesson_schedule(lessson_schedule_service: ILessonScheduleService = Depe
                         ):
     return lessson_schedule_service.list(LessonScheduleFilter(id=id, lesson_id=lesson_id, date=date, time=time, date_start=date_start, date_end=date_end))
 
-@router.get('/')
-def get_lesson_schedule(lesson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service),user = Depends(authenticate), id: Optional[int] = None):
-    return lesson_schedule_service.get(LessonScheduleFilter(id=id))
+@router.get('/{lesson_schedule_id}')
+def get_lesson_schedule(lesson_schedule_id: int, lesson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service),user = Depends(authenticate)):
+    return lesson_schedule_service.get(LessonScheduleFilter(id=lesson_schedule_id))
 
 @router.post('/')
 def create_lesson_schedule(data: LessonScheduleSchema, lesson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service),user = Depends(authenticate),):

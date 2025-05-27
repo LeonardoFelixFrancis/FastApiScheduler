@@ -34,3 +34,7 @@ class IUserRepository(IBaseRepository):
     @abstractmethod
     def list(self, filters: UserFilters) -> list[User]:
         pass
+    
+    @abstractmethod
+    def delete(self, user_id: int) -> User:
+        pass

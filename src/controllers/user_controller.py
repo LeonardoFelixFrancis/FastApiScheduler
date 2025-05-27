@@ -23,3 +23,7 @@ def get_user(user_id: int, user = Depends(authenticate), user_service: IUserServ
 @router.post("/", response_model=UserResponse)
 def create_user(user_data: UserCreate, user = Depends(authenticate), user_service: IUserService = Depends(get_user_service)):
     return user_service.create_teacher(user_data, user)
+
+@router.delete("/teacher/{teacher_id}")
+def delete_teacher(teacher_id: int, user = Depends(authenticate), user_service: IUserService = Depends(get_user_service)):
+    return user_service.delete_teacher(teacher_id)
