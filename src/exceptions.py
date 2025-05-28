@@ -16,6 +16,11 @@ unauthorized_action = HTTPException(
     detail="This action is forbiden."
 )
 
+user_does_not_exist_forgot_password = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail='E-mail informado não é associado a nenhum usuário.'
+)
+
 teacher_does_not_exist = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="The informed user does not exists."

@@ -20,6 +20,7 @@ class LessonService(ILessonService):
     
     def list(self, filters: LessonFilter) -> list[Lesson]:
         filters.company_id = self.logged_user.company_id
+        filters.active = True
         return self.lesson_repository.list(filters)
     
     def create(self, data: LessonSchema) -> Lesson:        

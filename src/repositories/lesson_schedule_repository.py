@@ -59,7 +59,9 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
                               LessonSchedule.time,
                               LessonSchedule.company_id,
                               User.name.label('teacher_name'),
-                              Lesson.lesson_name)\
+                              User.active.label('teacher_active'),
+                              Lesson.lesson_name,
+                              Lesson.active.label('lesson_active'))\
                               .join(User, User.id == LessonSchedule.teacher_id)\
                               .join(Lesson, Lesson.id == LessonSchedule.lesson_id)
 

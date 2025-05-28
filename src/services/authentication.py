@@ -1,17 +1,22 @@
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
+from src.interfaces.email.email_interface import IEmailService
+from src.interfaces.authentication.authentication_service_interface import IAuthenticationService
 from src.interfaces.user.user_repository_interface import IUserRepository
 from src.interfaces.authentication.authentication_utils import IAuthenticationUtils
+from src.schemas.user_filters import UserFilters
 from sqlalchemy.orm import Session
 from src.schemas.login_schema import LoginSchema
 from fastapi.exceptions import HTTPException
+from exceptions import user_does_not_exist_forgot_password
 import config
 
-class AuthenticationService:
+class AuthenticationService(IAuthenticationService):
 
-    def __init__(self, user_repository: IUserRepository, authentication_utils: IAuthenticationUtils):
+    def __init__(self, user_repository: IUserRepository, authentication_utils: IAuthenticationUtils, email_service: IEmailService):
         self.user_repository = user_repository
         self.authentication_utils = authentication_utils
+        self.email_service = email_service
 
         self.incorrect_credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -54,3 +59,9 @@ class AuthenticationService:
         access_token = self.authentication_utils.create_access_token(data={"username": user.username})
 
         return {"access_token": access_token}
+
+    def forgot_password(self, email):
+        user = self.user_repository.get(UserFilters(email=email))
+
+        if not user:
+            raise user_does_not_exist_forgot_password

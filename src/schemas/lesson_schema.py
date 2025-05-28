@@ -14,6 +14,7 @@ class LessonFilter(BaseModel):
     lesson_subject: str | None = None
     students: list[str] | None = None
     company_id: int | None = None
+    active: bool | None = None
 
 class LessonScheduleSchema(BaseModel):
     id: int | None = None
@@ -31,8 +32,10 @@ class LessonScheduleSchemaResponse(BaseModel):
     time: datetime.time
     teacher_id: int
     teacher_name: str
+    teacher_active: bool
     lesson_name: str
     company_id: int
+    lesson_active: bool
 
     class Config:
         json_encoders = {
@@ -48,3 +51,4 @@ class LessonScheduleFilter(BaseModel):
     teacher_id: int | None = None
     date_start: Optional[datetime.date] = None
     date_end: Optional[datetime.date] = None
+    active: bool | None = None

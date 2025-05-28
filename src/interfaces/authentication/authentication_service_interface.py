@@ -11,3 +11,7 @@ class IAuthenticationService:
     @abstractmethod
     def refresh_token(self, refresh_token: str):
         pass
+
+    @abstractmethod
+    def forgot_password(self, email: str):
+        pass

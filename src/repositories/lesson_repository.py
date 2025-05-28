@@ -36,7 +36,8 @@ class LessonRepository(BaseRepository, ILessonRepository):
         return existing_lesson
 
     def delete(self, lesson_id):
-        self.db.query(Lesson).filter_by(id = lesson_id).delete()
+        lesson = self.db.query(Lesson).filter_by(id = lesson_id).first()
+        lesson.active = False
         return True
 
     def _inner_list(self, filters: LessonFilter):
@@ -53,5 +54,8 @@ class LessonRepository(BaseRepository, ILessonRepository):
 
         if filters.company_id:
             query = query.filter(Lesson.company_id == filters.company_id)
+
+        if filters.active:
+            query = query.filter(Lesson.active == filters.active)
 
         return query
