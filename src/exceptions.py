@@ -45,3 +45,8 @@ lesson_schedule_does_not_exist = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail='The informed lesson schedule does not exist.'
 )
+
+password_reset_does_not_exists = HTTPException(
+    status_code = status.HTTP_404_NOT_FOUND,
+    detail='O token informado não é associado nenhum processo de alteração de senha.'
+)

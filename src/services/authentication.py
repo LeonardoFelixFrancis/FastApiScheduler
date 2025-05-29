@@ -4,19 +4,27 @@ from src.interfaces.email.email_interface import IEmailService
 from src.interfaces.authentication.authentication_service_interface import IAuthenticationService
 from src.interfaces.user.user_repository_interface import IUserRepository
 from src.interfaces.authentication.authentication_utils import IAuthenticationUtils
+from src.interfaces.authentication.authentication_repository import IAuthenticationRepository
 from src.schemas.user_filters import UserFilters
+from src.schemas.reset_password_schema import ResetPasswordSchema
 from sqlalchemy.orm import Session
 from src.schemas.login_schema import LoginSchema
 from fastapi.exceptions import HTTPException
-from exceptions import user_does_not_exist_forgot_password
+from exceptions import user_does_not_exist_forgot_password, password_reset_does_not_exists
+from datetime import datetime, timedelta, timezone
 import config
 
 class AuthenticationService(IAuthenticationService):
 
-    def __init__(self, user_repository: IUserRepository, authentication_utils: IAuthenticationUtils, email_service: IEmailService):
+    def __init__(self, user_repository: IUserRepository, 
+                       authentication_utils: IAuthenticationUtils, 
+                       email_service: IEmailService,
+                       authentication_repository: IAuthenticationRepository
+                       ):
         self.user_repository = user_repository
         self.authentication_utils = authentication_utils
         self.email_service = email_service
+        self.authentication_repository = authentication_repository
 
         self.incorrect_credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -65,3 +73,17 @@ class AuthenticationService(IAuthenticationService):
 
         if not user:
             raise user_does_not_exist_forgot_password
+        
+        self.email_service.send(user.email, 'forgot_password.html', {'token'})
+
+    def reset_password(self, data: ResetPasswordSchema, token: str):
+        password_reset = self.authentication_repository.get_password_reset(token)
+
+        if not password_reset:
+            raise password_reset_does_not_exists
+        
+        today = datetime.now(timezone.utc)
+        token_valid_until = password_reset.created_at + timedelta(minutes=password_reset.minutes_to_live)
+
+        if token_valid_until >= today:
+            raise
