@@ -8,6 +8,6 @@ class AuthenticationRepository(BaseRepository, IAuthenticationRepository):
     def __init__(self, db: Session):
         super().__init__(db)
 
-    def get_password_reset(self, token: str) -> PasswordReset:
+    def get_password_reset(self, token: str) -> PasswordReset | None:
         query = self.db.query(PasswordReset).filter(PasswordReset.token == token)
         return query.first()

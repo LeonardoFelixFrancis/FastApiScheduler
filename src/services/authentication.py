@@ -10,7 +10,7 @@ from src.schemas.reset_password_schema import ResetPasswordSchema
 from sqlalchemy.orm import Session
 from src.schemas.login_schema import LoginSchema
 from fastapi.exceptions import HTTPException
-from exceptions import user_does_not_exist_forgot_password, password_reset_does_not_exists
+from exceptions import user_does_not_exist_forgot_password, password_reset_does_not_exists, password_and_confirm_password_are_not_equal
 from datetime import datetime, timedelta, timezone
 import config
 
@@ -76,7 +76,7 @@ class AuthenticationService(IAuthenticationService):
         
         self.email_service.send(user.email, 'forgot_password.html', {'token'})
 
-    def reset_password(self, data: ResetPasswordSchema, token: str):
+    def reset_password(self, data: ResetPasswordSchema, token: str) -> bool:
         password_reset = self.authentication_repository.get_password_reset(token)
 
         if not password_reset:
@@ -87,3 +87,10 @@ class AuthenticationService(IAuthenticationService):
 
         if token_valid_until >= today:
             raise
+
+        if data.password != data.confirm_password:
+            raise password_and_confirm_password_are_not_equal
+        
+        self.user_repository.change_password(password_reset.user_id, data.password)
+
+        return True

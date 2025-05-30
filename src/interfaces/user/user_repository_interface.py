@@ -20,6 +20,10 @@ class IUserRepository(IBaseRepository):
         pass
     
     @abstractmethod
+    def change_password(self, user_id: int, password: str) -> User:
+        pass
+
+    @abstractmethod
     def get_by_username(self, username: str) -> User:
         pass
 

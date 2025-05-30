@@ -42,6 +42,14 @@ class UserRepository(BaseRepository, IUserRepository):
         self.db.add(db_user)
         return db_user
     
+    def change_password(self, user_id, password) -> User:
+        user = self.db.query(User).filter(User.id == user_id).first()
+
+        if user:
+            user.password = password
+            
+        return user
+    
     def get_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
     

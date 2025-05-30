@@ -18,5 +18,5 @@ class IAuthenticationService:
         pass
 
     @abstractmethod
-    def reset_password(self, data: ResetPasswordSchema):
+    def reset_password(self, data: ResetPasswordSchema, token: str) -> bool:
         pass

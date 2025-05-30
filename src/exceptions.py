@@ -50,3 +50,8 @@ password_reset_does_not_exists = HTTPException(
     status_code = status.HTTP_404_NOT_FOUND,
     detail='O token informado não é associado nenhum processo de alteração de senha.'
 )
+
+password_and_confirm_password_are_not_equal = HTTPException(
+    status_code = status.HTTP_400_BAD_REQUEST,
+    detail='As senhas informadas são diferentes.'
+)

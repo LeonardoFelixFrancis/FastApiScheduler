@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from src.repositories.base_repository import BaseRepository
 from src.models.user import User
 from src.models.lessons import Lesson
+from src.exceptions import lesson_schedule_does_not_exist
 class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
 
     def __init__(self, db: Session):
@@ -12,14 +13,14 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
         super().__init__(db)
 
 
-    def get(self, filter: LessonScheduleFilter) -> LessonSchedule:
+    def get(self, filter: LessonScheduleFilter) -> LessonScheduleSchemaResponse | None:
         query = self._inner_list(filter)
         item = query.first()
         if item:
             return LessonScheduleSchemaResponse(**item._asdict())
         return None
     
-    def list(self, filter: LessonScheduleFilter) -> list[LessonSchedule]:
+    def list(self, filter: LessonScheduleFilter) -> list[LessonScheduleSchemaResponse]:
         query = self._inner_list(filter)
         items = query.all()
         return [LessonScheduleSchemaResponse(**row._asdict()) for row in items]
@@ -43,6 +44,10 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
     
     def update(self, data: LessonScheduleSchema) -> LessonSchedule:
         existing_lesson_schedule = self.db.query(LessonSchedule).filter_by(id = data.id).first()
+
+        if not existing_lesson_schedule:
+            raise lesson_schedule_does_not_exist
+
         existing_lesson_schedule.date = data.date
         existing_lesson_schedule.time = data.time
         existing_lesson_schedule.lesson_id = data.lesson_id

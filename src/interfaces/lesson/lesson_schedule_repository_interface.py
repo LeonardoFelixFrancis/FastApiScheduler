@@ -1,4 +1,4 @@
-from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
+from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema, LessonScheduleSchemaResponse
 from src.models.lessons import LessonSchedule
 from abc import abstractmethod
 from src.interfaces.base_repositories_interfaces import IBaseRepository
@@ -6,11 +6,11 @@ from src.interfaces.base_repositories_interfaces import IBaseRepository
 class ILessonScheduleRepository(IBaseRepository):
 
     @abstractmethod
-    def get(self, filters: LessonScheduleFilter) -> LessonSchedule:
+    def get(self, filters: LessonScheduleFilter) -> LessonScheduleSchemaResponse | None:
         pass
 
     @abstractmethod
-    def list(self, filters: LessonScheduleFilter) -> list[LessonSchedule]:
+    def list(self, filters: LessonScheduleFilter) -> list[LessonScheduleSchemaResponse]:
         pass
     
     @abstractmethod
