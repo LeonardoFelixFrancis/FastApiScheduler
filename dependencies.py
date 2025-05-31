@@ -68,7 +68,7 @@ def get_emaii_service() -> IEmailService:
     environment = os.getenv('environment')
 
     if environment == 'production':
-        return HostingerEmailService()
+        return LocalEmailService()
     
     if environment == 'local':
         return LocalEmailService()
