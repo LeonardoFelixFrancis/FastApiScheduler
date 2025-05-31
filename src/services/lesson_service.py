@@ -19,16 +19,29 @@ class LessonService(ILessonService):
         return self.lesson_repository.get(filters)
     
     def list(self, filters: LessonFilter) -> list[Lesson]:
+
+        if not self.logged_user.is_adm:
+            raise unauthorized_action
+
         filters.company_id = self.logged_user.company_id
         filters.active = True
         return self.lesson_repository.list(filters)
     
-    def create(self, data: LessonSchema) -> Lesson:        
+    def create(self, data: LessonSchema) -> Lesson:   
+
+        if not self.logged_user.is_adm:
+            raise unauthorized_action
+
         lesson = self.lesson_repository.create(data, self.logged_user.company_id)
         self.lesson_repository.commit()
         return lesson
     
     def update(self, data: LessonSchema) -> Lesson:
+
+        if not self.logged_user.is_adm:
+            raise unauthorized_action
+
+
         existing_lesson = self.lesson_repository.get(LessonFilter(id = data.id, company_id=self.logged_user.company_id))
 
         if existing_lesson is None:
@@ -43,6 +56,10 @@ class LessonService(ILessonService):
         return update_lesson
         
     def delete(self, lesson_id: int) -> bool:
+
+        if not self.logged_user.is_adm:
+            raise unauthorized_action
+
         existing_lesson = self.lesson_repository.get(LessonFilter(id = lesson_id, company_id=self.logged_user.company_id))
 
         if existing_lesson is None:

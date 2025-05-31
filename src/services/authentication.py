@@ -12,10 +12,13 @@ from sqlalchemy.orm import Session
 from src.schemas.login_schema import LoginSchema
 from src.schemas.password_reset_schema import PasswordResetSchema
 from fastapi.exceptions import HTTPException
-from src.exceptions import (user_does_not_exist_forgot_password, password_reset_does_not_exists, password_and_confirm_password_are_not_equal, expired_token)
+from src.exceptions import (user_does_not_exist_forgot_password, 
+                            password_reset_does_not_exists, 
+                            password_and_confirm_password_are_not_equal, 
+                            expired_token)
 from datetime import datetime, timedelta, timezone
 import uuid
-import config
+import os
 
 class AuthenticationService(IAuthenticationService):
 
@@ -60,7 +63,7 @@ class AuthenticationService(IAuthenticationService):
         return {"access_token": access_token, 
                 "refresh_token": refresh_token, 
                 "token_type": "bearer", 
-                "user_data": {"id": user.id, "name": user.name, "username": user.username, "email": user.email}}
+                "user_data": {"id": user.id, "name": user.name, "username": user.username, "email": user.email, "is_adm": user.is_adm}}
     
     def refresh_token(self, refresh_token: str):
         username = self.authentication_utils.get_current_user_username(refresh_token)
@@ -74,7 +77,7 @@ class AuthenticationService(IAuthenticationService):
         return {"access_token": access_token}
 
     def forgot_password(self, email):
-        user = self.user_repository.get(UserFilters(email=email))
+        user = self.user_repository.get_by_email(email)
 
         if not user:
             raise user_does_not_exist_forgot_password
@@ -89,19 +92,19 @@ class AuthenticationService(IAuthenticationService):
         ))
 
         self.password_reset_repository.commit()
-        self.email_service.send(user.email, 'forgot_password.html', {'token'})
+        self.email_service.send(user.email, 'Redefinir senha', 'forgot_password.html',{'url': f'{os.getenv("FRONTEND_URL")}/reset_password/{token}', 'nome':user.name})
 
         return True
 
     def reset_password(self, data: ResetPasswordSchema, token: str) -> bool:
         password_reset = self.authentication_repository.get_password_reset(token)
 
-        if not password_reset.active:
-            raise token_valid_until
-
         if not password_reset:
             raise password_reset_does_not_exists
-        
+
+        if not password_reset.active:
+            raise expired_token
+
         today = datetime.now(timezone.utc)
         token_valid_until = password_reset.created_at.replace(tzinfo=timezone.utc) + timedelta(minutes=password_reset.minutes_to_live)
 

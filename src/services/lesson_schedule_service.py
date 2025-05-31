@@ -5,7 +5,7 @@ from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
 from src.schemas.user_filters import UserFilters
 from src.models.lessons import Lesson
 from src.models.user import User
-from src.exceptions import lesson_schedule_does_not_exist, unauthorized_action, teacher_does_not_exist, informed_user_is_not_teacher
+from src.exceptions import lesson_schedule_does_not_exist, unauthorized_action, teacher_does_not_exist, informed_user_is_not_teacher, unauthorized_action
 from src.interfaces.user.user_repository_interface import IUserRepository
 
 class LessonScheduleService(ILessonScheduleService):
@@ -21,6 +21,10 @@ class LessonScheduleService(ILessonScheduleService):
 
     def get(self, filters: LessonScheduleFilter) -> LessonScheduleSchemaResponse:
         filters.company_id = self.logged_user.company_id
+
+        if not self.logged_user.is_adm:
+            filters.teacher_id = self.logged_user.id
+
         lesson_schedule = self.lesson_schedule_repository.get(filters)
 
         if lesson_schedule is None:
@@ -30,9 +34,16 @@ class LessonScheduleService(ILessonScheduleService):
     
     def list(self, filters: LessonScheduleFilter) -> list[LessonScheduleSchemaResponse]:
         filters.company_id = self.logged_user.company_id
+        
+        if not self.logged_user.is_adm:
+            filters.teacher_id = self.logged_user.id
+
         return self.lesson_schedule_repository.list(filters)
     
     def create(self, data: LessonScheduleSchema) -> Lesson:
+
+        if not self.logged_user.is_adm:
+            raise unauthorized_action
 
         existing_user = self.user_repository.get(UserFilters(id = data.teacher_id))
 
@@ -47,6 +58,10 @@ class LessonScheduleService(ILessonScheduleService):
         return lesson_schedule
     
     def update(self, data: LessonScheduleSchema) -> Lesson:
+
+        if not self.logged_user.is_adm:
+            raise unauthorized_action
+
         existing_user = self.user_repository.get(UserFilters(id = data.teacher_id))
 
         if existing_user is None:

@@ -19,9 +19,9 @@ class PaswordResetRepository(BaseRepository, IPasswordResetRepository):
         return password_reset
 
     def update(self, password_reset: PasswordReset, data: PasswordResetSchema) -> PasswordReset:
-        data = data.model_dump()
+        model_data = data.model_dump()
 
-        for key, value in data.items():
+        for key, value in model_data.items():
 
             if key == 'id':
                 continue

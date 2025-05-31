@@ -6,7 +6,7 @@ from src.interfaces.base_repositories_interfaces import IBaseRepository
 class IPasswordResetRepository(IBaseRepository):
 
     @abstractmethod
-    def get(self, token: str) -> PasswordReset:
+    def get(self, token: str) -> PasswordReset | None:
         pass 
 
     @abstractmethod

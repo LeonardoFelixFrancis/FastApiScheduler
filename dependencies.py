@@ -75,8 +75,12 @@ def get_emaii_service() -> IEmailService:
     
     raise EnvironmentError('Specified environment does not exist.')
 
-def get_user_service(user_repository = Depends(get_user_repository), company_repository = Depends(get_company_repository), logged_user = Depends(get_current_user)) -> UserService:
-    return UserService(user_repository, company_repository, logged_user)
+def get_user_service(user_repository = Depends(get_user_repository), 
+                     company_repository = Depends(get_company_repository),
+                     password_reset_repository = Depends(get_password_reset_password),
+                     email_service = Depends(get_emaii_service),
+                     logged_user = Depends(get_current_user)) -> UserService:
+    return UserService(user_repository, company_repository, password_reset_repository, email_service, logged_user)
 
 def get_authentication_service(user_repository = Depends(get_user_repository), 
                                authentication_repository = Depends(get_authentication_repository), 

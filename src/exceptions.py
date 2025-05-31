@@ -13,7 +13,7 @@ ambiguous_permission = HTTPException(
 
 unauthorized_action = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="This action is forbiden."
+    detail="Ação proíbida."
 )
 
 user_does_not_exist_forgot_password = HTTPException(
@@ -59,4 +59,14 @@ password_and_confirm_password_are_not_equal = HTTPException(
 expired_token = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail='O token está expirado.'
+)
+
+email_already_taken = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail='E-mail já cadastrado.'
+)
+
+username_already_taken = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail='Nome de usuário já cadastrado.'
 )
