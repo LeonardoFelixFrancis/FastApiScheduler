@@ -65,7 +65,7 @@ def authenticate(user = Depends(get_current_user)):
 
 # SERVICES
 def get_emaii_service() -> IEmailService:
-    environment = os.getenv('environment')
+    environment = os.getenv('ENVIRONMENT')
 
     if environment == 'production':
         return LocalEmailService()
