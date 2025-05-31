@@ -10,7 +10,7 @@ from src.interfaces.authentication.authentication_service_interface import IAuth
 from fastapi.security import OAuth2PasswordRequestForm
 
 
-router = APIRouter(prefix='/auth', tags=['auth'])
+router = APIRouter(prefix='/api/auth', tags=['auth'])
 
 @router.post('/login')
 def login(data: LoginSchema, auth_service: IAuthenticationService = Depends(get_authentication_service)):

@@ -5,7 +5,7 @@ from src.interfaces.lesson.lesson_schedule_service_interface import ILessonSched
 import datetime
 from typing import Optional
 
-router = APIRouter(prefix='/lesson_schedule', tags=['lesson_schedules'])
+router = APIRouter(prefix='/api/lesson_schedule', tags=['lesson_schedules'])
 
 @router.get('/', response_model=list[LessonScheduleSchemaResponse])
 def list_lesson_schedule(lessson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service), 

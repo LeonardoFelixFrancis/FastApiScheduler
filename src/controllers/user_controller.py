@@ -5,7 +5,7 @@ from src.interfaces.user.user_service_interface import IUserService
 from dependencies import get_user_service, authenticate
 from typing import Optional
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/api/users", tags=["Users"])
 
 @router.get('/', response_model=list[UserResponse])
 def get_users(user = Depends(authenticate), 

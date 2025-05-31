@@ -5,7 +5,7 @@ from src.schemas.lesson_schema import LessonFilter, LessonSchema
 from typing import Optional
 
 
-router = APIRouter(prefix='/lesson', tags=['lessons'])
+router = APIRouter(prefix='/api/lesson', tags=['lessons'])
 
 @router.get('/')
 def list_lessons(lesson_service: ILessonService = Depends(get_lesson_service), 
