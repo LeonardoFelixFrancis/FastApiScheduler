@@ -20,7 +20,7 @@ class IUserRepository(IBaseRepository):
         pass
     
     @abstractmethod
-    def change_password(self, user_id: int, password: str) -> User:
+    def change_password(self, user_id: int, password: str) -> User | None:
         pass
 
     @abstractmethod
@@ -40,5 +40,5 @@ class IUserRepository(IBaseRepository):
         pass
     
     @abstractmethod
-    def delete(self, user_id: int) -> User:
+    def delete(self, user_id: int) -> User | None:
         pass

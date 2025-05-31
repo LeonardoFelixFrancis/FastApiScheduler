@@ -1,15 +1,15 @@
-from src.schemas.lesson_schema import LessonScheduleSchema, LessonScheduleFilter
+from src.schemas.lesson_schema import LessonScheduleSchema, LessonScheduleFilter, LessonScheduleSchemaResponse
 from src.models.lessons import LessonSchedule
 from abc import ABC, abstractmethod
 
 class ILessonScheduleService(ABC):
 
     @abstractmethod
-    def get(self, filters: LessonScheduleFilter) -> LessonSchedule:
+    def get(self, filters: LessonScheduleFilter) -> LessonScheduleSchemaResponse:
         pass
 
     @abstractmethod
-    def list(self, filters: LessonScheduleFilter) -> list[LessonSchedule]:
+    def list(self, filters: LessonScheduleFilter) -> list[LessonScheduleSchemaResponse]:
         pass
 
     @abstractmethod

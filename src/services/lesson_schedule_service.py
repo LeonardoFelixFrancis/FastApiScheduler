@@ -1,7 +1,7 @@
 from src.interfaces.lesson.lesson_schedule_service_interface import ILessonScheduleService
 from src.interfaces.lesson.lesson_schedule_repository_interface import ILessonScheduleRepository
 from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
-from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
+from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema, LessonScheduleSchemaResponse
 from src.schemas.user_filters import UserFilters
 from src.models.lessons import Lesson
 from src.models.user import User
@@ -19,11 +19,16 @@ class LessonScheduleService(ILessonScheduleService):
         self.user_repository = user_repository
         self.logged_user = logged_user
 
-    def get(self, filters: LessonScheduleFilter) -> Lesson:
+    def get(self, filters: LessonScheduleFilter) -> LessonScheduleSchemaResponse:
         filters.company_id = self.logged_user.company_id
-        return self.lesson_schedule_repository.get(filters)
+        lesson_schedule = self.lesson_schedule_repository.get(filters)
+
+        if lesson_schedule is None:
+            raise lesson_schedule_does_not_exist
+
+        return lesson_schedule
     
-    def list(self, filters: LessonScheduleFilter) -> list[Lesson]:
+    def list(self, filters: LessonScheduleFilter) -> list[LessonScheduleSchemaResponse]:
         filters.company_id = self.logged_user.company_id
         return self.lesson_schedule_repository.list(filters)
     

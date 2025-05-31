@@ -42,13 +42,14 @@ class UserRepository(BaseRepository, IUserRepository):
         self.db.add(db_user)
         return db_user
     
-    def change_password(self, user_id, password) -> User:
+    def change_password(self, user_id, password) -> User | None:
         user = self.db.query(User).filter(User.id == user_id).first()
 
         if user:
-            user.password = password
-            
-        return user
+            user.password = self.authentication_utils.hash_password(password)
+            return user
+
+        return None
     
     def get_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
@@ -85,8 +86,11 @@ class UserRepository(BaseRepository, IUserRepository):
 
         return query
     
-    def delete(self, user_id: int) -> User:
+    def delete(self, user_id: int) -> User | None:
         user = self.db.query(User).filter_by(id = user_id).first()
-        user.active = False
-        return user
         
+        if user:
+            user.active = False
+            return user
+
+        return None

@@ -3,6 +3,7 @@ from src.repositories.lesson_repository import LessonRepository
 from src.repositories.lesson_schedule_repository import LessonScheduleRepository
 from src.repositories.company_repository import CompanyRepository
 from src.repositories.authentication_repository import AuthenticationRepository
+from src.repositories.password_reset_repository import PaswordResetRepository
 from src.services.user_service import UserService
 from src.services.authentication import AuthenticationService
 from src.services.lesson_service import LessonService
@@ -41,7 +42,10 @@ def get_company_repository(db: Session = Depends(get_db)) -> CompanyRepository:
 
 def get_authentication_repository(db: Session = Depends(get_db)) -> AuthenticationRepository:
     return AuthenticationRepository(db)
-    
+
+def get_password_reset_password(db: Session = Depends(get_db)) -> PaswordResetRepository:
+    return PaswordResetRepository(db)
+
 # OTHERS
 def get_current_user(user_repository = Depends(get_user_repository), auth_utils = Depends(get_auth_utils), token = Depends(oauth2_scheme)):
     username = auth_utils.get_current_user_username(token)
@@ -76,9 +80,14 @@ def get_user_service(user_repository = Depends(get_user_repository), company_rep
 
 def get_authentication_service(user_repository = Depends(get_user_repository), 
                                authentication_repository = Depends(get_authentication_repository), 
+                               password_reset_repository = Depends(get_password_reset_password),
                                authentication_utils: AuthenticationUtils = Depends(get_auth_utils),
                                mail_service = Depends(get_emaii_service)):
-    return AuthenticationService(user_repository, authentication_utils, mail_service, authentication_repository)
+    return AuthenticationService(user_repository, 
+                                 authentication_utils, 
+                                 mail_service, 
+                                 authentication_repository, 
+                                 password_reset_repository)
 
 def get_lesson_service(lesson_repository = Depends(get_lesson_repository), user_repository = Depends(get_user_repository), logged_user = Depends(get_current_user)) -> LessonService:
     return LessonService(lesson_repository, user_repository, logged_user)
