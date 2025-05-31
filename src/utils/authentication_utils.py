@@ -50,6 +50,10 @@ class AuthenticationUtils(IAuthenticationUtils):
 
     def get_current_user_username(self, token: str):
         try:
+
+            if not token:
+                return None
+
             payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
             username: str | None = payload.get('username')
             if username is None:
