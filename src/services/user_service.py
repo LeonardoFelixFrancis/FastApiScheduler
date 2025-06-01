@@ -49,10 +49,14 @@ class UserService(IUserService):
         self.company_repository.commit()
         self.company_repository.refresh(company)
 
-        return self._create_user(UserCreate(username = user.username,
+        user = self._create_user(UserCreate(username = user.username,
                                             name = user.name,
                                             email = user.email,
                                             password = user.password), False, True, company.id)
+        
+        self.user_repository.commit()
+
+        return user
     
     def create_teacher(self, user: UserCreate, logged_user: User):
         try:
