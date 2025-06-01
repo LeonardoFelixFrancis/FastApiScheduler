@@ -21,7 +21,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 import os
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/internal")  
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/internal", auto_error=False)  
 
 # UTILS
 def get_auth_utils() -> AuthenticationUtils:

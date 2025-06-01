@@ -8,6 +8,7 @@ from src.schemas.forgot_password_schema import ForgotPasswordSchema
 from src.interfaces.user.user_service_interface import IUserService
 from src.interfaces.authentication.authentication_service_interface import IAuthenticationService
 from fastapi.security import OAuth2PasswordRequestForm
+import traceback
 
 
 router = APIRouter(prefix='/api/auth', tags=['auth'])
@@ -26,7 +27,9 @@ def internal_login(data: OAuth2PasswordRequestForm = Depends(), auth_service: IA
 
 @router.post('/register')
 def register(data: AdmCreate, user_service: IUserService = Depends(get_user_service)):
-    return user_service.create_adm(data)
+    response = user_service.create_adm(data)
+    print(traceback.format_exc())
+    return response
 
 @router.post('/reset_password/{token}')
 def reset_password(token: str, data: ResetPasswordSchema, auth_service: IAuthenticationService = Depends(get_authentication_service)):

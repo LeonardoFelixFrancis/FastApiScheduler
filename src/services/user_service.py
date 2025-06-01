@@ -97,7 +97,6 @@ class UserService(IUserService):
         return created_user
 
     def delete_teacher(self, teacher_id) -> bool:
-
         existing_teacher = self.user_repository.get(UserFilters(id=teacher_id))
 
         if not self.logged_user.is_adm:
