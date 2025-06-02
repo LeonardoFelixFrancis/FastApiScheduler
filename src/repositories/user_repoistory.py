@@ -84,6 +84,9 @@ class UserRepository(BaseRepository, IUserRepository):
         if user_filters.is_teacher:
             query = query.filter(User.is_teacher == user_filters.is_teacher)
 
+        if user_filters.company_id:
+            query = query.filter(User.company_id == user_filters.company_id)
+
         return query
     
     def delete(self, user_id: int) -> User | None:
