@@ -4,7 +4,7 @@ from src.schemas.password_reset_schema import PasswordResetSchema
 from src.models.password_reset import PasswordReset
 from sqlalchemy.orm import Session
 
-class PaswordResetRepository(BaseRepository, IPasswordResetRepository):
+class PasswordResetRepository(BaseRepository, IPasswordResetRepository):
 
     def __init__(self, db: Session):
         self.db = db

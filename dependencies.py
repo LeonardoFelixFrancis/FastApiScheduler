@@ -3,7 +3,7 @@ from src.repositories.lesson_repository import LessonRepository
 from src.repositories.lesson_schedule_repository import LessonScheduleRepository
 from src.repositories.company_repository import CompanyRepository
 from src.repositories.authentication_repository import AuthenticationRepository
-from src.repositories.password_reset_repository import PaswordResetRepository
+from src.repositories.password_reset_repository import PasswordResetRepository
 from src.services.user_service import UserService
 from src.services.authentication import AuthenticationService
 from src.services.lesson_service import LessonService
@@ -43,8 +43,8 @@ def get_company_repository(db: Session = Depends(get_db)) -> CompanyRepository:
 def get_authentication_repository(db: Session = Depends(get_db)) -> AuthenticationRepository:
     return AuthenticationRepository(db)
 
-def get_password_reset_password(db: Session = Depends(get_db)) -> PaswordResetRepository:
-    return PaswordResetRepository(db)
+def get_password_reset_repository(db: Session = Depends(get_db)) -> PasswordResetRepository:
+    return PasswordResetRepository(db)
 
 # OTHERS
 def get_current_user(user_repository = Depends(get_user_repository), auth_utils = Depends(get_auth_utils), token = Depends(oauth2_scheme)):
@@ -55,16 +55,16 @@ def get_current_user(user_repository = Depends(get_user_repository), auth_utils 
 
 def authenticate(user = Depends(get_current_user)):
     if not user:
-        raise  HTTPException(
-        selfstatus_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validated credentials.",
-        headers={"WWW-Authenticate": "Bearer"}
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials.",
+            headers={"WWW-Authenticate": "Bearer"}
         )
-    
+
     return user
 
 # SERVICES
-def get_emaii_service() -> IEmailService:
+def get_email_service() -> IEmailService:
     environment = os.getenv('ENVIRONMENT')
 
     if environment == 'production':
@@ -75,22 +75,22 @@ def get_emaii_service() -> IEmailService:
     
     raise EnvironmentError('Specified environment does not exist.')
 
-def get_user_service(user_repository = Depends(get_user_repository), 
+def get_user_service(user_repository = Depends(get_user_repository),
                      company_repository = Depends(get_company_repository),
-                     password_reset_repository = Depends(get_password_reset_password),
-                     email_service = Depends(get_emaii_service),
+                     password_reset_repository = Depends(get_password_reset_repository),
+                     email_service = Depends(get_email_service),
                      logged_user = Depends(get_current_user)) -> UserService:
     return UserService(user_repository, company_repository, password_reset_repository, email_service, logged_user)
 
-def get_authentication_service(user_repository = Depends(get_user_repository), 
-                               authentication_repository = Depends(get_authentication_repository), 
-                               password_reset_repository = Depends(get_password_reset_password),
+def get_authentication_service(user_repository = Depends(get_user_repository),
+                               authentication_repository = Depends(get_authentication_repository),
+                               password_reset_repository = Depends(get_password_reset_repository),
                                authentication_utils: AuthenticationUtils = Depends(get_auth_utils),
-                               mail_service = Depends(get_emaii_service)):
-    return AuthenticationService(user_repository, 
-                                 authentication_utils, 
-                                 mail_service, 
-                                 authentication_repository, 
+                               mail_service = Depends(get_email_service)):
+    return AuthenticationService(user_repository,
+                                 authentication_utils,
+                                 mail_service,
+                                 authentication_repository,
                                  password_reset_repository)
 
 def get_lesson_service(lesson_repository = Depends(get_lesson_repository), user_repository = Depends(get_user_repository), logged_user = Depends(get_current_user)) -> LessonService:
