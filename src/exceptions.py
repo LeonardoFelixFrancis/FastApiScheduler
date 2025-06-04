@@ -70,3 +70,8 @@ username_already_taken = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail='Nome de usuário já cadastrado.'
 )
+
+student_doest_not_exists = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail='Estudante informado não existe.'
+)

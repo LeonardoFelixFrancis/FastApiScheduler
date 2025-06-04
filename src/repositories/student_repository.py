@@ -9,8 +9,9 @@ class StudentRepository(BaseRepository, IStudentsRepository):
     def __init__(self, db):
         super().__init__(db)
 
-    def create(self, data: StudentInputSchema) -> Student:
+    def create(self, data: StudentInputSchema, company_id: int) -> Student:
         student = Student(**data.model_dump())
+        student.company_id = company_id
         self.db.add(student)
         return student
     
@@ -28,6 +29,9 @@ class StudentRepository(BaseRepository, IStudentsRepository):
     def update(self, student: Student, data: StudentInputSchema) -> Student:
         data_dict = data.model_dump()
         for key, value in data_dict.items():
+            if key in ('id'):
+                continue
+
             if not hasattr(student, key):
                 continue
 

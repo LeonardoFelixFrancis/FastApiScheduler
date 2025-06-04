@@ -1,11 +1,11 @@
-from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter
+from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput
 
 class IStudentService:
 
     def create(self, data: StudentInputSchema) -> StudentOutputSchema:
         pass
 
-    def update(self, data: StudentInputSchema) -> StudentOutputSchema:
+    def update(self, data: StudentUpdateInput) -> StudentOutputSchema:
         pass
 
     def get(self, student_id: int) -> StudentOutputSchema:
@@ -17,5 +17,5 @@ class IStudentService:
     def delete(self, student_id: int) -> bool:
         pass
 
-    def add_user_to_lesson(self, student_id: int, lesson_id: int):
+    def add_student_to_lesson(self, student_id: int, lesson_id: int):
         pass

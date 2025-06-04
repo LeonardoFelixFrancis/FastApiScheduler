@@ -7,6 +7,7 @@ class Student(Base):
 
     id: Mapped[int] = mapped_column(Integer(), primary_key=True, nullable=False)
     name: Mapped[str] = mapped_column(String(), nullable=False)
+    company_id: Mapped[int] = mapped_column(Integer(), nullable=False)
 
 class StudentLesson(Base):
     __tablename__ = 'students_lessons'
