@@ -13,7 +13,7 @@ class StudentOutputSchema(BaseModel):
     company_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class StudentSchemaFilter(BaseModel):
     id: int | None = None

@@ -1,7 +1,7 @@
 from dependencies import get_student_service
 from fastapi import APIRouter, Depends
 from src.interfaces.students.students_service_interface import IStudentService
-from schemas.students_schema import StudentOutputSchema, StudentInputSchema, StudentUpdateInput, StudentSchemaFilter
+from src.schemas.students_schema import StudentOutputSchema, StudentInputSchema, StudentUpdateInput, StudentSchemaFilter
 
 router = APIRouter(prefix='/api/students', tags=['students'])
 

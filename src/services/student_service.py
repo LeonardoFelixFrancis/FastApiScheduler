@@ -16,6 +16,9 @@ class StudentService(IStudentService):
 
         if not self.logged_user.is_adm:
             raise unauthorized_action
+        
+        if not self.logged_user.company_id:
+            raise unauthorized_action
 
         student = self.student_repository.create(data, self.logged_user.company_id)
         self.student_repository.commit()
@@ -23,6 +26,9 @@ class StudentService(IStudentService):
     
     def get(self, student_id: int) -> StudentOutputSchema:
         student = self.student_repository.get(student_id)
+
+        if student is None:
+            raise student_doest_not_exists
 
         if student.company_id != self.logged_user.company_id:
             raise unauthorized_action
