@@ -3,6 +3,7 @@ from src.models.students import Student, StudentLesson
 from sqlalchemy.orm import Session
 from src.repositories.base_repository import BaseRepository
 from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput
+from typing import List
 
 class StudentRepository(BaseRepository, IStudentsRepository):
 
@@ -47,3 +48,8 @@ class StudentRepository(BaseRepository, IStudentsRepository):
         new_student_lessson = StudentLesson(lesson_id = lesson.id, student_id = student.id)
         self.db.add(new_student_lessson)
         return new_student_lessson
+    
+    def get_many_by_id(self, ids: List[int], company_id: int) -> List[Student]:
+        query = self.db.query(Student).filter(Student.id.in_(ids), Student.company_id == company_id)
+        return query.all()
+        

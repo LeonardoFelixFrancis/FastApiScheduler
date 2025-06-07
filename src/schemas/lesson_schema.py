@@ -1,18 +1,28 @@
 from pydantic import BaseModel, validator
 from typing import Optional
+from src.schemas.students_schema import StudentOutputSchema
 import datetime
 
 class LessonSchema(BaseModel):
     id: int | None = None
     lesson_name: str
     lesson_subject: str
-    students: list[str] | None = None
+    students: list[int] | None = None
+
+class LessonOutput(BaseModel):
+    id: int | None = None
+    lesson_name: str
+    lesson_subject: str
+    students: list[StudentOutputSchema] | None = None
+
+    class Config:
+        from_attributes = True
 
 class LessonFilter(BaseModel):
     id: int | None = None
     lesson_name: str | None = None
     lesson_subject: str | None = None
-    students: list[str] | None = None
+    students: list[int] | None = None
     company_id: int | None = None
     active: bool | None = None
 

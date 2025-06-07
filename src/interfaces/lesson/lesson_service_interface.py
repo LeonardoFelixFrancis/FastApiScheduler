@@ -1,4 +1,4 @@
-from src.schemas.lesson_schema import LessonSchema, LessonFilter
+from src.schemas.lesson_schema import LessonSchema, LessonFilter, LessonOutput
 from src.models.lessons import Lesson
 from abc import ABC, abstractmethod
 
@@ -9,7 +9,7 @@ class ILessonService(ABC):
         pass
     
     @abstractmethod
-    def list(self, filters: LessonFilter) -> list[Lesson]:
+    def list(self, filters: LessonFilter) -> list[LessonOutput]:
         pass
     
     @abstractmethod

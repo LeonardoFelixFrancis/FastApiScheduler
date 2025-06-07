@@ -3,7 +3,7 @@ from src.models.lessons import Lesson
 from src.interfaces.base_repositories_interfaces import IBaseRepository
 from src.schemas.students_schema import StudentSchemaFilter, StudentInputSchema, StudentOutputSchema, StudentUpdateInput
 from abc import ABC, abstractmethod
-
+from typing import List
 class IStudentsRepository(IBaseRepository):
     
     @abstractmethod
@@ -11,7 +11,7 @@ class IStudentsRepository(IBaseRepository):
         pass
 
     @abstractmethod
-    def list(self, filter: StudentSchemaFilter) -> list[Student]:
+    def list(self, filter: StudentSchemaFilter) -> List[Student]:
         pass
     
     @abstractmethod
@@ -28,4 +28,8 @@ class IStudentsRepository(IBaseRepository):
     
     @abstractmethod
     def add_user_to_lesson(self, lesson: Lesson, student: Student) -> StudentLesson:
+        pass
+
+    @abstractmethod
+    def get_many_by_id(self, ids: List[int], company_id: int) -> List[Student]:
         pass

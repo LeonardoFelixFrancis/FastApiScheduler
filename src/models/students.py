@@ -1,6 +1,6 @@
 from src.infrastructure.database import Base
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy import Integer, String, DateTime, ForeignKey
+from sqlalchemy import Integer, String, DateTime, ForeignKey, Table, Column
 
 class Student(Base):
     __tablename__ = 'students'
@@ -9,8 +9,9 @@ class Student(Base):
     name: Mapped[str] = mapped_column(String(), nullable=False)
     company_id: Mapped[int] = mapped_column(Integer(), nullable=False)
 
-class StudentLesson(Base):
-    __tablename__ = 'students_lessons'
-
-    student_id = mapped_column(ForeignKey('students.id'), primary_key=True)
-    lesson_id = mapped_column(ForeignKey('lessons.id'), primary_key=True)
+StudentLesson = Table(
+    "students_lessons",
+    Base.metadata,
+    Column("student_id", ForeignKey("students.id"), primary_key=True),
+    Column("lesson_id", ForeignKey("lessons.id"), primary_key=True),
+)
