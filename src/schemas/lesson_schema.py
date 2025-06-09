@@ -62,3 +62,7 @@ class LessonScheduleFilter(BaseModel):
     date_start: Optional[datetime.date] = None
     date_end: Optional[datetime.date] = None
     active: bool | None = None
+
+class StudentAttendanceInputSchema(BaseModel):
+    students_who_attended: list[int]
+    schedule_id: int

@@ -1,8 +1,9 @@
 from src.interfaces.students.students_repository_interface import IStudentsRepository
+from src.models.lessons import Lesson
 from src.models.students import Student, StudentLesson
 from sqlalchemy.orm import Session
 from src.repositories.base_repository import BaseRepository
-from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput
+from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput, StudentsDBResponse
 from typing import List
 
 class StudentRepository(BaseRepository, IStudentsRepository):
@@ -44,6 +45,10 @@ class StudentRepository(BaseRepository, IStudentsRepository):
         self.db.delete(student)
         return student
     
+    def remove_user_to_lesson(self, student_ids: List[int], lesson_id: int) -> None:
+        self.db.query(StudentLesson).filter(StudentLesson.student_id.in_(student_ids), StudentLesson.lesson_id == lesson_id).delete()
+        
+
     def add_user_to_lesson(self, lesson, student):
         new_student_lessson = StudentLesson(lesson_id = lesson.id, student_id = student.id)
         self.db.add(new_student_lessson)
@@ -53,3 +58,17 @@ class StudentRepository(BaseRepository, IStudentsRepository):
         query = self.db.query(Student).filter(Student.id.in_(ids), Student.company_id == company_id)
         return query.all()
         
+    
+
+    def get_students(self, lessons: List[Lesson]) -> List[StudentsDBResponse]:
+        lesson_ids = [lesson.id for lesson in lessons]
+
+        students = self.db.query(
+            StudentLesson.lesson_id,
+            Student.id,
+            Student.name,
+            Student.company_id
+        ).join(Student, Student.id == StudentLesson.student_id)\
+        .filter(StudentLesson.lesson_id.in_(lesson_ids)).all()
+
+        return students

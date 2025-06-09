@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import TypedDict, NamedTuple
 
 class StudentInputSchema(BaseModel):
     name: str
@@ -19,3 +20,9 @@ class StudentSchemaFilter(BaseModel):
     id: int | None = None
     name: str | None = None
     company_id: int | None = None
+
+class StudentsDBResponse(NamedTuple):
+    id: int
+    name: str
+    lesson_id: int
+    company_id: int

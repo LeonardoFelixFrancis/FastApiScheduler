@@ -9,9 +9,7 @@ class Student(Base):
     name: Mapped[str] = mapped_column(String(), nullable=False)
     company_id: Mapped[int] = mapped_column(Integer(), nullable=False)
 
-StudentLesson = Table(
-    "students_lessons",
-    Base.metadata,
-    Column("student_id", ForeignKey("students.id"), primary_key=True),
-    Column("lesson_id", ForeignKey("lessons.id"), primary_key=True),
-)
+class StudentLesson(Base):
+    __tablename__ = 'students_lessons'
+    student_id = mapped_column(ForeignKey('students.id'), primary_key=True)
+    lesson_id = mapped_column(ForeignKey('lessons.id'), primary_key=True)

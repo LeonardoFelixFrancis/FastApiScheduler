@@ -1,11 +1,13 @@
 from src.interfaces.lesson.lesson_schedule_repository_interface import ILessonScheduleRepository
 from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema, LessonScheduleSchemaResponse
-from src.models.lessons import LessonSchedule
+from src.models.lessons import LessonSchedule, LessonScheduleAttendance
+from src.models.students import Student
 from sqlalchemy.orm import Session
 from src.repositories.base_repository import BaseRepository
 from src.models.user import User
 from src.models.lessons import Lesson
 from src.exceptions import lesson_schedule_does_not_exist
+from typing import List
 class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
 
     def __init__(self, db: Session):
@@ -92,3 +94,21 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
             query = query.filter(LessonSchedule.date <= filter.date_end)
 
         return query
+    
+    def get_schedule_attendances(self, schedule_id: int):
+        return self.db.query(LessonScheduleAttendance).filter(LessonScheduleAttendance.schedule_id == schedule_id).all()
+
+    def add_student_attendance(self, student: Student, schedule: LessonSchedule):
+        new_attendance = LessonScheduleAttendance(
+            schedule_id = schedule.id,
+            student_id = student.id,
+            attended = True
+        )
+
+        self.db.add(new_attendance)
+
+    def mark_as_unattended(self, attendance_ids: List[int]):
+        self.db.query(LessonScheduleAttendance).filter(LessonScheduleAttendance.id.in_(attendance_ids)).update({'attended': False})
+
+    def mark_as_attended(self, attendance_ids:  List[int]):
+        self.db.query(LessonScheduleAttendance).filter(LessonScheduleAttendance.id.in_(attendance_ids)).update({'attended': True})

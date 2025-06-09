@@ -1,8 +1,10 @@
 from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
 from src.schemas.lesson_schema import LessonFilter, LessonSchema
 from src.models.lessons import Lesson
+from src.models.students import StudentLesson, Student
 from sqlalchemy.orm import Session, selectinload
 from src.repositories.base_repository import BaseRepository
+from typing import List
 
 class LessonRepository(BaseRepository, ILessonRepository):
 
@@ -41,7 +43,7 @@ class LessonRepository(BaseRepository, ILessonRepository):
         return True
 
     def _inner_list(self, filters: LessonFilter):
-        query = self.db.query(Lesson).options(selectinload(Lesson.students))
+        query = self.db.query(Lesson)
 
         if filters.lesson_name:
             query = query.filter(Lesson.lesson_name.ilike(f"%{filters.lesson_name}%"))
@@ -59,3 +61,6 @@ class LessonRepository(BaseRepository, ILessonRepository):
             query = query.filter(Lesson.active == filters.active)
 
         return query
+
+
+        

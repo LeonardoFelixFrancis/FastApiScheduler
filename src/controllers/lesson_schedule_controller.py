@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from dependencies import get_lesson_schedule_service, authenticate
-from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema, LessonScheduleSchemaResponse
+from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema, LessonScheduleSchemaResponse, StudentAttendanceInputSchema
 from src.interfaces.lesson.lesson_schedule_service_interface import ILessonScheduleService, LessonScheduleSchema
 import datetime
 from typing import Optional
@@ -34,3 +34,7 @@ def delete_lesson_schedule(lesson_schedule_id: int, lesson_schedule_service: ILe
 @router.put('/')
 def update_lesson_schedule(data: LessonScheduleSchema, lesson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service), user = Depends(authenticate)):
     return lesson_schedule_service.update(data)
+
+@router.post('/send_student_attendance')
+def send_student_attendance(data: StudentAttendanceInputSchema, lesson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service), user = Depends(authenticate)):
+    return lesson_schedule_service.send_student_attendance(data)

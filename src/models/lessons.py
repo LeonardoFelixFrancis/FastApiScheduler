@@ -13,7 +13,6 @@ class Lesson(Base):
     company_id: Mapped[int | None] = mapped_column(Integer, index=True)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
     schedules = relationship("LessonSchedule", back_populates="lesson_info")
-    students: Mapped[list["Student"]] = relationship("Student", secondary=StudentLesson, lazy="selectin")
 
 class LessonSchedule(Base):
     __tablename__ = 'lesson_schedule'
@@ -26,3 +25,11 @@ class LessonSchedule(Base):
     teacher_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
 
     lesson_info = relationship("Lesson", back_populates="schedules")
+
+class LessonScheduleAttendance(Base):
+    __tablename__ = 'lesson_schedule_attendance'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    schedule_id: Mapped[int] = mapped_column(ForeignKey('lesson_schedule.id'), nullable = False)
+    student_id: Mapped[int] = mapped_column(ForeignKey('students.id'), nullable = False)
+    attended: Mapped[bool] = mapped_column(Boolean, nullable = False)

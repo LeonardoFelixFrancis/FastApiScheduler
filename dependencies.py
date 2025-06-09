@@ -111,9 +111,10 @@ def get_lesson_service(lesson_repository = Depends(get_lesson_repository),
 
 def get_lesson_schedule_service(lesson_schedule_repository = Depends(get_lesson_schedule_repository), 
                                 lesson_repository = Depends(get_lesson_repository),
-                                user_repository = Depends(get_user_repository), 
+                                user_repository = Depends(get_user_repository),
+                                student_repository = Depends(get_students_repository),
                                 logged_user = Depends(get_current_user)) -> LessonScheduleService:
-    return LessonScheduleService(lesson_schedule_repository, lesson_repository, user_repository, logged_user)
+    return LessonScheduleService(lesson_schedule_repository, lesson_repository, user_repository, student_repository, logged_user)
 
 def get_company_service(company_repository = Depends(get_company_repository)):
     return CompanyService(company_repository)

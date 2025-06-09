@@ -1,7 +1,7 @@
 from src.models.students import Student, StudentLesson
 from src.models.lessons import Lesson
 from src.interfaces.base_repositories_interfaces import IBaseRepository
-from src.schemas.students_schema import StudentSchemaFilter, StudentInputSchema, StudentOutputSchema, StudentUpdateInput
+from src.schemas.students_schema import StudentSchemaFilter, StudentInputSchema, StudentOutputSchema, StudentUpdateInput, StudentsDBResponse
 from abc import ABC, abstractmethod
 from typing import List
 class IStudentsRepository(IBaseRepository):
@@ -25,6 +25,10 @@ class IStudentsRepository(IBaseRepository):
     @abstractmethod
     def delete(self, student: Student) -> Student:
         pass
+
+    @abstractmethod
+    def remove_user_to_lesson(self, student_ids: List[int], lesson_id: int) -> None:
+        pass
     
     @abstractmethod
     def add_user_to_lesson(self, lesson: Lesson, student: Student) -> StudentLesson:
@@ -32,4 +36,8 @@ class IStudentsRepository(IBaseRepository):
 
     @abstractmethod
     def get_many_by_id(self, ids: List[int], company_id: int) -> List[Student]:
+        pass
+
+    @abstractmethod
+    def get_students(self, lessons: List[Lesson]) -> List[StudentsDBResponse]:
         pass
