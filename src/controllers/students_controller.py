@@ -29,3 +29,6 @@ def delete_student(student_id: int, student_service: IStudentService = Depends(g
 def add_student_to_lesson(student_id: int, lesson_id: int, student_service: IStudentService = Depends(get_student_service)):
     return student_service.add_student_to_lesson(student_id, lesson_id)
 
+@router.get('/get_lesson_students/{lesson_id}')
+def get_lesson_students(lesson_id: int, student_service: IStudentService = Depends(get_student_service)):
+    return student_service.list_students_of_lesson(lesson_id)

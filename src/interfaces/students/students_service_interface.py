@@ -1,5 +1,6 @@
 from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput
 from abc import ABC, abstractmethod
+from typing import List
 
 class IStudentService(ABC):
 
@@ -25,4 +26,8 @@ class IStudentService(ABC):
 
     @abstractmethod
     def add_student_to_lesson(self, student_id: int, lesson_id: int):
+        pass
+
+    @abstractmethod
+    def list_students_of_lesson(self, lesson_id: int) -> List[StudentOutputSchema]:
         pass

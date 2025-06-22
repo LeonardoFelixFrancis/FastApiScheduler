@@ -120,6 +120,7 @@ def get_company_service(company_repository = Depends(get_company_repository)):
     return CompanyService(company_repository)
 
 def get_student_service(student_repository = Depends(get_students_repository), 
-                        lesson_repository = Depends(get_students_repository),
+                        lesson_repository = Depends(get_lesson_repository),
+                        lesson_schedule_repository = Depends(get_lesson_schedule_repository),
                         logged_user = Depends(get_current_user)):
-    return StudentService(student_repository, lesson_repository, logged_user)
+    return StudentService(student_repository, lesson_repository,  lesson_schedule_repository, logged_user)

@@ -1,5 +1,5 @@
 from src.interfaces.students.students_repository_interface import IStudentsRepository
-from src.models.lessons import Lesson
+from src.models.lessons import Lesson, LessonScheduleAttendance, LessonSchedule
 from src.models.students import Student, StudentLesson
 from sqlalchemy.orm import Session
 from src.repositories.base_repository import BaseRepository
@@ -72,3 +72,9 @@ class StudentRepository(BaseRepository, IStudentsRepository):
         .filter(StudentLesson.lesson_id.in_(lesson_ids)).all()
 
         return students
+    
+    def get_student_attendance(self, lesson_schedule: LessonSchedule) -> List[LessonScheduleAttendance]:
+        return self.db.query(LessonScheduleAttendance).filter(
+            LessonScheduleAttendance.schedule_id == lesson_schedule.id
+        )
+        

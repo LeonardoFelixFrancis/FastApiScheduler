@@ -16,6 +16,11 @@ class StudentOutputSchema(BaseModel):
     class Config:
         from_attributes = True
 
+class StudentAttendanceOutputSchema(BaseModel):
+    id: int
+    name: str
+    attended: bool
+
 class StudentSchemaFilter(BaseModel):
     id: int | None = None
     name: str | None = None

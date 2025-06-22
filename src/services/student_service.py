@@ -1,15 +1,21 @@
 from src.interfaces.students.students_repository_interface import IStudentsRepository
 from src.interfaces.students.students_service_interface import IStudentService
 from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
-from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput
-from src.schemas.lesson_schema import LessonFilter
+from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
+from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput, StudentAttendanceOutputSchema
+from src.schemas.lesson_schema import LessonFilter, LessonScheduleFilter
 from src.models.user import User
-from src.exceptions import student_doest_not_exists, lesson_does_not_exist, unauthorized_action
+from src.exceptions import student_doest_not_exists, lesson_does_not_exist, unauthorized_action, lesson_schedule_does_not_exist
+from typing import List
 class StudentService(IStudentService):
 
-    def __init__(self, students_repository: IStudentsRepository, lesson_repository: ILessonRepository, logged_user: User):
+    def __init__(self, students_repository: IStudentsRepository, 
+                       lesson_repository: ILessonRepository, 
+                       lesson_schedule_repository: ILessonRepository,
+                       logged_user: User):
         self.student_repository = students_repository
         self.lesson_repository = lesson_repository
+        self.lesson_schedule_repository = lesson_schedule_repository
         self.logged_user = logged_user
 
     def create(self, data: StudentInputSchema) -> StudentOutputSchema:
@@ -84,3 +90,23 @@ class StudentService(IStudentService):
         self.student_repository.commit()
 
         return None
+    
+    def list_students_of_lesson(self, lesson_id: int) -> List[StudentAttendanceOutputSchema]:
+
+        lesson_schedule = self.lesson_schedule_repository.get(LessonScheduleFilter(id=lesson_id))
+
+        if not lesson_schedule:
+            raise lesson_schedule_does_not_exist
+
+        lesson = self.lesson_repository.get(filters=LessonFilter(id = lesson_schedule.lesson_id))
+
+        if lesson is None:
+            raise 
+        
+        student_attendance = self.student_repository.get_student_attendance(lesson_schedule)
+        students = self.student_repository.get_students([lesson])
+        return [StudentAttendanceOutputSchema(
+            id = student.id,
+            name = student.name,
+            attended = next((attendance.attended for attendance in student_attendance if attendance.student_id == student.id), False)
+        ) for student in students]

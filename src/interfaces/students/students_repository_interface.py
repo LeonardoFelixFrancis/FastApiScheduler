@@ -1,5 +1,5 @@
 from src.models.students import Student, StudentLesson
-from src.models.lessons import Lesson
+from src.models.lessons import Lesson, LessonSchedule, LessonScheduleAttendance
 from src.interfaces.base_repositories_interfaces import IBaseRepository
 from src.schemas.students_schema import StudentSchemaFilter, StudentInputSchema, StudentOutputSchema, StudentUpdateInput, StudentsDBResponse
 from abc import ABC, abstractmethod
@@ -40,4 +40,8 @@ class IStudentsRepository(IBaseRepository):
 
     @abstractmethod
     def get_students(self, lessons: List[Lesson]) -> List[StudentsDBResponse]:
+        pass
+
+    @abstractmethod
+    def get_student_attendance(self, lesson_schedule: LessonSchedule) -> List[LessonScheduleAttendance]:
         pass
