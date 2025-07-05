@@ -6,7 +6,7 @@ from src.schemas.lesson_schema import LessonScheduleFilter, LessonScheduleSchema
 from src.schemas.user_filters import UserFilters
 from src.models.lessons import Lesson
 from src.models.user import User
-from src.exceptions import lesson_schedule_does_not_exist, unauthorized_action, teacher_does_not_exist, informed_user_is_not_teacher, unauthorized_action, student_doest_not_exists
+from src.exceptions import lesson_schedule_does_not_exist, unauthorized_action, teacher_does_not_exist, informed_user_is_not_teacher, unauthorized_action, student_does_not_exists
 from src.interfaces.user.user_repository_interface import IUserRepository
 
 class LessonScheduleService(ILessonScheduleService):
@@ -41,7 +41,8 @@ class LessonScheduleService(ILessonScheduleService):
         if not self.logged_user.is_adm:
             filters.teacher_id = self.logged_user.id
 
-        return self.lesson_schedule_repository.list(filters)
+        items = self.lesson_schedule_repository.list(filters)
+        return [LessonScheduleSchemaResponse.model_validate(model) for model in items]
     
     def create(self, data: LessonScheduleSchema) -> Lesson:
 
@@ -103,37 +104,3 @@ class LessonScheduleService(ILessonScheduleService):
         self.lesson_schedule_repository.commit()
 
         return True    
-
-    def send_student_attendance(self, data: StudentAttendanceInputSchema):
-        
-        if self.logged_user.company_id != schedule.company_id:
-            raise unauthorized_action
-
-        schedule = self.lesson_schedule_repository.get(LessonScheduleFilter(id = data.schedule_id))
-
-        if schedule is None:
-            raise lesson_schedule_does_not_exist
-        
-        attendances = self.lesson_schedule_repository.get_schedule_attendances(schedule.id)
-        student_attendances_ids = [attendance.student_id for attendance in attendances]
-        attendances_to_remove = [attendance.id for attendance in attendances if attendance.student_id not in data.students_who_attended and attendance.attended == False]
-        attendances_to_mark_as_attended = [attendance.id for attendance in attendances if attendance.student_id in data.students_who_attended and attendance.attended == False]
-        attendances_to_create = [student for student in data.students_who_attended if student.id not in student_attendances_ids]
-
-        self.lesson_schedule_repository.mark_as_unattended(attendances_to_remove)
-        self.lesson_schedule_repository.mark_as_attended(attendances_to_mark_as_attended)
-
-        for new_attendance in attendances_to_create:
-            student = self.student_repository.get(new_attendance)
-        
-            if student is None:
-                raise student_doest_not_exists
-
-            if student.company_id != self.logged_user.company_id:
-                raise unauthorized_action
-          
-            self.lesson_schedule_repository.add_student_attendance(student, schedule)
-    
-        self.lesson_schedule_repository.commit()
-
-        return True

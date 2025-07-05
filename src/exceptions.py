@@ -71,7 +71,12 @@ username_already_taken = HTTPException(
     detail='Nome de usuário já cadastrado.'
 )
 
-student_doest_not_exists = HTTPException(
+student_does_not_exists = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail='Estudante informado não existe.'
+)
+
+attendance_does_not_exist = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail='A presença informada não existe.'
 )

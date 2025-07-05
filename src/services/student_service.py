@@ -1,17 +1,17 @@
 from src.interfaces.students.students_repository_interface import IStudentsRepository
 from src.interfaces.students.students_service_interface import IStudentService
 from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
-from src.interfaces.lesson.lesson_repository_interface import ILessonRepository
-from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput, StudentAttendanceOutputSchema
+from src.interfaces.lesson.lesson_schedule_repository_interface import ILessonScheduleRepository
+from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput, StudentAttendanceOutputSchema, StudentAttendanceCreateSchema
 from src.schemas.lesson_schema import LessonFilter, LessonScheduleFilter
 from src.models.user import User
-from src.exceptions import student_doest_not_exists, lesson_does_not_exist, unauthorized_action, lesson_schedule_does_not_exist
+from src.exceptions import student_does_not_exists, lesson_does_not_exist, unauthorized_action, lesson_schedule_does_not_exist, attendance_does_not_exist
 from typing import List
 class StudentService(IStudentService):
 
     def __init__(self, students_repository: IStudentsRepository, 
                        lesson_repository: ILessonRepository, 
-                       lesson_schedule_repository: ILessonRepository,
+                       lesson_schedule_repository: ILessonScheduleRepository,
                        logged_user: User):
         self.student_repository = students_repository
         self.lesson_repository = lesson_repository
@@ -34,7 +34,7 @@ class StudentService(IStudentService):
         student = self.student_repository.get(student_id)
 
         if student is None:
-            raise student_doest_not_exists
+            raise student_does_not_exists
 
         if student.company_id != self.logged_user.company_id:
             raise unauthorized_action
@@ -50,7 +50,7 @@ class StudentService(IStudentService):
         student = self.student_repository.get(data.id)
 
         if student is None:
-            raise student_doest_not_exists
+            raise student_does_not_exists
         
         if student.company_id != self.logged_user.company_id:
             raise unauthorized_action
@@ -63,7 +63,7 @@ class StudentService(IStudentService):
         student = self.student_repository.get(student_id)
 
         if student is None:
-            raise student_doest_not_exists
+            raise student_does_not_exists
         
         if student.company_id != self.logged_user.company_id:
             raise unauthorized_action
@@ -76,7 +76,7 @@ class StudentService(IStudentService):
         student = self.student_repository.get(student_id)
         
         if student is None:
-            raise student_doest_not_exists
+            raise student_does_not_exists
         
         if student.company_id != self.logged_user.company_id:
             raise unauthorized_action
@@ -103,10 +103,63 @@ class StudentService(IStudentService):
         if lesson is None:
             raise 
         
-        student_attendance = self.student_repository.get_student_attendance(lesson_schedule)
+        student_attendance = self.student_repository.get_attendances_of_schedule(lesson_schedule)
         students = self.student_repository.get_students([lesson])
         return [StudentAttendanceOutputSchema(
             id = student.id,
             name = student.name,
             attended = next((attendance.attended for attendance in student_attendance if attendance.student_id == student.id), False)
         ) for student in students]
+
+    def create_student_attendance(self, data: StudentAttendanceCreateSchema):
+        
+        student = self.student_repository.get(data.student_id)
+
+        if student is None:
+            raise student_does_not_exists
+        
+        schedule = self.lesson_schedule_repository.get(LessonScheduleFilter(
+            id = data.schedule_id
+        ))
+
+        if schedule is None:
+            raise lesson_schedule_does_not_exist
+        
+        new_attendance = self.student_repository.create_student_attendance(
+            schedule, student, data.attended
+        )
+
+        self.student_repository.commit()
+
+        return True
+    
+    def update_student_attendance(self, data: StudentAttendanceCreateSchema):
+
+        student = self.student_repository.get(data.student_id)
+
+        if student is None:
+            raise student_does_not_exists
+        
+        schedule = self.lesson_schedule_repository.get(LessonScheduleFilter(
+            id = data.schedule_id
+        ))
+
+        if schedule is None:
+            raise lesson_schedule_does_not_exist
+
+        attendance = self.student_repository.get_attendance(
+            schedule,
+            student
+        )
+
+        if attendance is None:
+            attendance = self.student_repository.create_student_attendance(
+                schedule,
+                student, 
+                data.attended
+            )
+        
+        attendance.attended = data.attended
+        self.student_repository.commit()
+
+        return attendance

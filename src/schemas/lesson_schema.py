@@ -48,6 +48,7 @@ class LessonScheduleSchemaResponse(BaseModel):
     lesson_active: bool
 
     class Config:
+        from_attributes = True
         json_encoders = {
             datetime.time: lambda t: t.strftime('%H:%M')
         }

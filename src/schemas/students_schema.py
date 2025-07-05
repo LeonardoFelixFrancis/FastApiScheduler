@@ -21,6 +21,11 @@ class StudentAttendanceOutputSchema(BaseModel):
     name: str
     attended: bool
 
+class StudentAttendanceCreateSchema(BaseModel):
+    schedule_id: int
+    student_id: int
+    attended: bool
+
 class StudentSchemaFilter(BaseModel):
     id: int | None = None
     name: str | None = None

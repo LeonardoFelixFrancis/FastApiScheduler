@@ -73,8 +73,24 @@ class StudentRepository(BaseRepository, IStudentsRepository):
 
         return students
     
-    def get_student_attendance(self, lesson_schedule: LessonSchedule) -> List[LessonScheduleAttendance]:
+    def get_attendances_of_schedule(self, lesson_schedule: LessonSchedule) -> List[LessonScheduleAttendance]:
         return self.db.query(LessonScheduleAttendance).filter(
             LessonScheduleAttendance.schedule_id == lesson_schedule.id
-        )
+        ).all()
         
+    def create_student_attendance(self, lesson_schedule: LessonSchedule, student: Student, attended: bool = False) -> LessonScheduleAttendance:
+        new_lesson_schedule_attendance = LessonScheduleAttendance(
+            student_id = student.id,
+            schedule_id = lesson_schedule.id,
+            attended = attended
+        )
+
+        self.db.add(new_lesson_schedule_attendance)
+        return new_lesson_schedule_attendance
+    
+    def get_attendance(self, lesson_schedule: LessonSchedule, student: Student):
+        return self.db.query(LessonScheduleAttendance).filter(
+            LessonScheduleAttendance.schedule_id == lesson_schedule.id
+        ).filter(
+            LessonScheduleAttendance.student_id == student.id
+        ).first()

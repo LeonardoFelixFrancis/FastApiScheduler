@@ -8,11 +8,11 @@ from typing import List
 class ILessonScheduleRepository(IBaseRepository):
 
     @abstractmethod
-    def get(self, filters: LessonScheduleFilter) -> LessonScheduleSchemaResponse | None:
+    def get(self, filters: LessonScheduleFilter) -> LessonSchedule | None:
         pass
 
     @abstractmethod
-    def list(self, filters: LessonScheduleFilter) -> list[LessonScheduleSchemaResponse]:
+    def list(self, filters: LessonScheduleFilter) -> list[LessonSchedule]:
         pass
     
     @abstractmethod
@@ -29,16 +29,4 @@ class ILessonScheduleRepository(IBaseRepository):
     
     @abstractmethod
     def get_schedule_attendances(self, schedule_id: int):
-        pass
-
-    @abstractmethod
-    def add_student_attendance(self, student: Student, schedule: LessonSchedule):
-        pass
-
-    @abstractmethod
-    def mark_as_unattended(self, attendance_id:  List[int]):
-        pass
-
-    @abstractmethod
-    def mark_as_attended(self, attendance_id:  List[int]):
         pass

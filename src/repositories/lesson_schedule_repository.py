@@ -15,17 +15,15 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
         super().__init__(db)
 
 
-    def get(self, filter: LessonScheduleFilter) -> LessonScheduleSchemaResponse | None:
+    def get(self, filter: LessonScheduleFilter) -> LessonSchedule | None:
         query = self._inner_list(filter)
         item = query.first()
-        if item:
-            return LessonScheduleSchemaResponse(**item._asdict())
-        return None
+        return item
     
-    def list(self, filter: LessonScheduleFilter) -> list[LessonScheduleSchemaResponse]:
+    def list(self, filter: LessonScheduleFilter) -> list[LessonSchedule]:
         query = self._inner_list(filter)
         items = query.all()
-        return [LessonScheduleSchemaResponse(**row._asdict()) for row in items]
+        return items
     
     def create(self, data: LessonScheduleSchema, company_id: int | None) -> LessonSchedule:
         lesson_schedule = LessonSchedule(
@@ -97,18 +95,3 @@ class LessonScheduleRepository(BaseRepository, ILessonScheduleRepository):
     
     def get_schedule_attendances(self, schedule_id: int):
         return self.db.query(LessonScheduleAttendance).filter(LessonScheduleAttendance.schedule_id == schedule_id).all()
-
-    def add_student_attendance(self, student: Student, schedule: LessonSchedule):
-        new_attendance = LessonScheduleAttendance(
-            schedule_id = schedule.id,
-            student_id = student.id,
-            attended = True
-        )
-
-        self.db.add(new_attendance)
-
-    def mark_as_unattended(self, attendance_ids: List[int]):
-        self.db.query(LessonScheduleAttendance).filter(LessonScheduleAttendance.id.in_(attendance_ids)).update({'attended': False})
-
-    def mark_as_attended(self, attendance_ids:  List[int]):
-        self.db.query(LessonScheduleAttendance).filter(LessonScheduleAttendance.id.in_(attendance_ids)).update({'attended': True})

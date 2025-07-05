@@ -1,4 +1,4 @@
-from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput
+from src.schemas.students_schema import StudentInputSchema, StudentOutputSchema, StudentSchemaFilter, StudentUpdateInput, StudentAttendanceCreateSchema, StudentAttendanceOutputSchema
 from abc import ABC, abstractmethod
 from typing import List
 
@@ -29,5 +29,13 @@ class IStudentService(ABC):
         pass
 
     @abstractmethod
-    def list_students_of_lesson(self, lesson_id: int) -> List[StudentOutputSchema]:
+    def list_students_of_lesson(self, lesson_id: int) -> List[StudentAttendanceOutputSchema]:
+        pass
+
+    @abstractmethod
+    def create_student_attendance(self, data: StudentAttendanceCreateSchema):
+        pass
+
+    @abstractmethod
+    def update_student_attendance(self, data: StudentAttendanceCreateSchema):
         pass

@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 class ILessonService(ABC):
 
     @abstractmethod
-    def get(self, filters: LessonFilter) -> Lesson:
+    def get(self, filters: LessonFilter) -> LessonOutput:
         pass
     
     @abstractmethod

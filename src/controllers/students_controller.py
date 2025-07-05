@@ -1,7 +1,7 @@
 from dependencies import get_student_service
 from fastapi import APIRouter, Depends
 from src.interfaces.students.students_service_interface import IStudentService
-from src.schemas.students_schema import StudentOutputSchema, StudentInputSchema, StudentUpdateInput, StudentSchemaFilter
+from src.schemas.students_schema import StudentOutputSchema, StudentInputSchema, StudentUpdateInput, StudentSchemaFilter, StudentAttendanceCreateSchema
 
 router = APIRouter(prefix='/api/students', tags=['students'])
 
@@ -32,3 +32,8 @@ def add_student_to_lesson(student_id: int, lesson_id: int, student_service: IStu
 @router.get('/get_lesson_students/{lesson_id}')
 def get_lesson_students(lesson_id: int, student_service: IStudentService = Depends(get_student_service)):
     return student_service.list_students_of_lesson(lesson_id)
+
+
+@router.put('/update_student_attendance')
+def update_student_attendance(data: StudentAttendanceCreateSchema, student_service: IStudentService = Depends(get_student_service)):
+    return student_service.update_student_attendance(data)

@@ -21,7 +21,7 @@ class LessonService(ILessonService):
         self.student_repository = student_repository
         self.logged_user = logged_user
 
-    def get(self, filters: LessonFilter) -> Lesson:
+    def get(self, filters: LessonFilter) -> LessonOutput:
         filters.company_id = self.logged_user.company_id
         lesson = self.lesson_repository.get(filters)
         students = self.student_repository.get_students([lesson])
@@ -114,11 +114,15 @@ class LessonService(ILessonService):
         data.students = None
         current_students = self.student_repository.get_students([existing_lesson])
         current_students_ids = [student.id for student in current_students]
-        removed_students = [student.id for student in current_students if student.id not in students_ids]
+
+        if students_ids:
+            removed_students = [student.id for student in current_students if student.id not in students_ids]
 
         self.student_repository.remove_user_to_lesson(removed_students, existing_lesson.id)
 
-        added_students = [student_id for student_id in students_ids if student_id not in current_students_ids]
+        if students_ids:
+            added_students = [student_id for student_id in students_ids if student_id not in current_students_ids]
+        
         if added_students and self.logged_user.company_id:
             students = self.student_repository.get_many_by_id(added_students, self.logged_user.company_id)
 

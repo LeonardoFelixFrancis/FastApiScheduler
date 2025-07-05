@@ -43,5 +43,13 @@ class IStudentsRepository(IBaseRepository):
         pass
 
     @abstractmethod
-    def get_student_attendance(self, lesson_schedule: LessonSchedule) -> List[LessonScheduleAttendance]:
+    def get_attendances_of_schedule(self, lesson_schedule: LessonSchedule) -> List[LessonScheduleAttendance]:
+        pass
+
+    @abstractmethod
+    def create_student_attendance(self, lesson_schedule: LessonSchedule, student: Student, attended: bool = False) -> LessonScheduleAttendance:
+        pass
+
+    @abstractmethod
+    def get_attendance(self, lesson_schedule: LessonSchedule, student: Student):
         pass

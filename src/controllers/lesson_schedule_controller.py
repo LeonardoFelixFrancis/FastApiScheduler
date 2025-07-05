@@ -34,7 +34,3 @@ def delete_lesson_schedule(lesson_schedule_id: int, lesson_schedule_service: ILe
 @router.put('/')
 def update_lesson_schedule(data: LessonScheduleSchema, lesson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service), user = Depends(authenticate)):
     return lesson_schedule_service.update(data)
-
-@router.post('/send_student_attendance')
-def send_student_attendance(data: StudentAttendanceInputSchema, lesson_schedule_service: ILessonScheduleService = Depends(get_lesson_schedule_service), user = Depends(authenticate)):
-    return lesson_schedule_service.send_student_attendance(data)

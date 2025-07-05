@@ -23,7 +23,3 @@ class ILessonScheduleService(ABC):
     @abstractmethod
     def update(self, data: LessonScheduleSchema) -> LessonSchedule:
         pass
-
-    @abstractmethod
-    def send_student_attendance(self, data: StudentAttendanceInputSchema) -> bool:
-        pass
